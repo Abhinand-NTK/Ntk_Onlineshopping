@@ -1,0 +1,221 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<body>
+    <div class="mt-2">
+        <div class="row" style="height: 120vh;">
+            <div class="col-md-2  d-none d-md-block" style="background-color: black;">
+                <div class="selectable-list text-light d-flex justify-content-center">
+                    <ul class="list-unstyled mt-5">
+                        <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+                        <!-- Add more list items as needed -->
+                    </ul>
+                </div>
+
+
+            </div>
+            <div class="col-md-10 col-10">
+                <div class="border p-3">
+                    <div class="col-md-12 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold text-decoration-underline">Order Status
+                                    Management
+                                </h5>
+                                <form action="/admin_c/orderstatus/{{details.id}}" method="POST">
+                                    <!-- Replace with your form action URL -->
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="status">Select Status:</label>
+                                        <select class="form-control" name="status" id="status">
+                                            <option value="{{ item.order_id.status }}">{{ item.order_id.status}}
+                                            </option>
+                                            {% for choice in status_choices %}
+                                            {% if choice.0 != item.order_id.status %}
+                                            <option value="{{ choice.1 }}">{{ choice.1 }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% for item in orders %}
+                    <div class="font-weight-bold mt-3">
+                        Order id: {{ details.order_id }}
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <div class="row border border-dark">
+                            <div class="col-md-1 col-4 " style="max-height: 100px; max-width: 100px;">
+                                <img src="{{ item.variant.product.images.url }}" alt="" class="img-fluid">
+                            </div>
+                            <div class="col-md-1 col-8 border border-dark ">
+                                <p><strong>Size:</strong> {{ item.variant.size }}</p>
+                                <p><strong>Color:</strong> {{ item.variant.color }}</p>
+                            </div>
+                            <div class="col-md-1 col-6 border border-dark">
+                                <p><strong>Order Amount:</strong> {{ item.order_id.paid_amount }}</p>
+                            </div>
+                            <div class="col-md-2 col-6 border border-dark">
+                                <p><strong>₹ For each:</strong> {{ item.product_price }}</p>
+                                <p>{{item.return_reason}}</p>
+                            </div>
+                            <div class="col-md-1 col-4 border border-dark">
+                                <p><strong>Quantity:</strong> {{ item.quandity }}</p>
+                            </div>
+                            <div class="col-md-1 col-12 border border-dark">
+                                <p><strong>Status:</strong> {{ item.order_id.status }}</p>
+                            </div>
+                            <div class="col-md-3 col-12 border border-dark">
+                                <p><strong>Status of Individual return request:</strong></p>
+                                {% if item.return_request == True %}
+                                {% if item.return_accept == False %}
+                                <p class=" text-warning font-weight-bold">Request on pending</p>
+                                {%else%}
+                                <div class="request-status">
+                                    <p class="text-success font-weight-bold">Request Accepted & Refunded</p>
+
+                                </div>
+                                {%endif%}
+                                {% endif %}
+                                
+                                {% if item.return_request %}
+                                <button type="button" class="btn btn-info" data-toggle="modal"
+                                    data-target="#exampleModal-{{item.id}}">
+                                    Info
+                                </button>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-2 col-12 border border-dark">
+                                <p><strong>Payment Status:</strong> {{ item.order_id.payement.status }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                   
+                </div>
+                <div class="font-weight-bold mt-3 text-danger">
+                    Reson for request:
+                </div>
+                {% for item in orders %}
+                {% if item.order_id.status == 'Return requested' %}
+                <div class=" mt-3 border">
+                    <div class="">
+                        <div class="col-md-6 col-12">
+                            <div><strong>Return order Note:</strong> {{ item.order_id.ordernote }}</div></span>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+                {% endfor %}
+                <div class="font-weight-bold mt-3">
+                    Address:
+                </div>
+                <div class=" mt-3 border">
+                    <div class="">
+                        <div class="col-md-6 col-12">
+                            <div><strong>Customer Name:</strong> {{ details.address.first_name }}
+                                {{details.address.last_name }}</div></span>
+                            <div><strong>Phone Number:</strong> {{ details.address.phonenumber }}</div>
+                            <div><strong>Address:</strong> {{ details.address.address }}</div>
+                            <div><strong>Town:</strong> {{ details.address.town }}</div>
+                            <div><strong>Zip Code:</strong> {{ details.address.zip_code }}</div>
+                            <div><strong>District:</strong> {{ details.address.district }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="font-weight-bold mt-3">
+                    User Details:
+                </div>
+
+                <div class=" mt-3 border">
+                    <div class="">
+                        <div class="col-md-6 col-12">
+                            <div><strong>User Name:</strong> {{ details.user.first_name }} {{ details.user.lastname }}
+                            </div></span>
+                            <div><strong>Email id ::</strong> {{ details.user.email }}</div>
+                            <div><strong>IP:</strong> {{ details.address.ip }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <!-- Modal -->
+            {% for item in orders %}
+            <div class="modal fade" id="exampleModal-{{item.id}}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark">
+                            <h5 class="modal-title text-light" id="exampleModalLabel">Manage Individual Return Request
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="ml-3 mt-3  mr-3 border border-dark">
+                            <ul>Reason for Request:</ul>
+                            <p>{{item.return_reason}}</p>
+                        </div>
+                        <p></p>
+                        <div class="modal-body d-flex justify-content-between">
+
+                            <div>Request Status</div>
+                            <div class="">
+                                {% if item.return_accept == 0 %}
+                                <p class=" text-warning font-weight-bold">Request on pending</p>
+                                <div><button onclick="approve('{{item.id}}')" class="btn btn-success approved">Approve</button></div>
+                                {%else%}
+                                <div class="request-status">
+                                    <p class="text-success font-weight-bold">Request Accepted & Refunded</p>
+
+                                </div>
+
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+    <body>
+    <script src="{% static 'js/productdetails.js' %}"></script>
+
+        <script>
+           
+        </script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+</html>
+{% endblock content%}

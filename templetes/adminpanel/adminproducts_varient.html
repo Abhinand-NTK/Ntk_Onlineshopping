@@ -1,0 +1,296 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+
+<body>
+
+  <div class="mt-2">
+    <div class="row" style="height: 120vh;">
+      <div class="col-md-2  d-none d-md-block " style="background-color: black;">
+        <div class="selectable-list text-light d-flex justify-content-center">
+          <ul class="list-unstyled mt-5">
+            <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+            <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+            <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+            <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+            <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+            <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+            <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+            <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+            <!-- Add more list items as needed -->
+          </ul>
+        </div>
+
+
+      </div>
+      <div class="col-lg-10 col-md-9 col-sm-8" style="overflow-x: auto;">
+        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#addVariantModal">
+          Add Variant
+        </button>
+
+        <table class="table align-middle mb-0 bg-white table table-bordered table-wrapper">
+          <thead class="bg-dark text-light">
+            <tr>
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                  </div>
+                 {% endfor %}
+              {% endif %}
+            </tr>
+            <tr>
+              <th>Product Name</th>
+              <th>Size</th>
+              <th>Color</th>
+              <th>Inages</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Details</th>
+              <th>Edit</th>
+              <th>Avalibilty</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          {% for var in page %}
+          <tbody>
+            
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  {{var.product}}
+                </div>
+
+              </td>
+              <td>
+                {{var.size}}
+              </td>
+              <td>
+                {{var.color}}
+              </td>
+              <td>
+                <img src="{{ var.product.images.url }}" alt="" width="100" height="100">
+
+              </td>
+              <td>{{var.price}}</td>
+              <td>
+                {{var.stock}}
+              </td>
+              <td>
+                 <a class="btn btn-danger" href="/admin_c/productvarientdetails/{{var.id}}">Details</a>
+              </td>
+              <td>
+                <button type="button" class="btn btn-dark" data-toggle="modal"
+                  data-target="#editVariantModal{{ var.id }}">
+                  Edit
+                </button>
+              </td>
+              <td>
+                <form action="{% url 'list_unlist_productvarient'%}" method="POST" id="imageUploadForm">
+                  {% csrf_token %}
+                  <input type="hidden" name="check" value="{% if var.is_avaliable %}false{% else %}true{% endif %}">
+                  <input type="hidden" name="product__vareint_id" value="{{ var.id }}">
+                  <button class="btn toggle-button {% if var.is_avaliable %}btn-success{% else %}btn-danger{% endif %}"
+                    type="submit">
+                    {% if var.is_avaliable %}Unlist{% else %}List{% endif %}
+                  </button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+
+        <div class="d-flex justify-content-between ">
+          <div class="pagination-list">
+            {% if page.has_previous %}
+            <a href="?page=1" class="text-dark font-weight-bold">&laquo; First</a>
+            <a href="?page={{ page.previous_page_number }}" class="text-dark font-weight-bold">Previous</a>
+            {% endif %}
+          </div>
+            
+            <span class="text-dark font-weight-bold">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+          
+          <div class="pagination-list">
+            {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}" class="text-dark font-weight-bold">Next</a>
+            <a href="?page={{ page.paginator.num_pages }}" class="text-dark font-weight-bold">Last &raquo;</a>
+            {% endif %}
+          </div>
+      </div>
+      
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- Button to Trigger Modal -->
+  <!-- Modal -->
+  <!-- Button to trigger the modal -->
+  <!-- Modal  for add the varient -->
+  <div class="modal fade" id="addVariantModal" tabindex="-1" role="dialog" aria-labelledby="addVariantModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addVariantModalLabel">Add Product Variant</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Add Varient of the products -->
+        <div class="modal-body">
+          <form action="{% url 'productvarients' %}" method="post" enctype="multipart/form-data"  onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="product">Product</label>
+              <select class="form-control" id="product" name="product">
+                {% for i in products %}
+                <option value="{{i.id}}">
+                  {{i.name}}
+                </option>
+                {%endfor%}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="size">Size</label>
+              <select class="form-control" id="size" name="size">
+                {% for i in sizes %}
+                <option value="{{i.id}}">
+                  {{i.name}}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="color">Color</label>
+              <select class="form-control" id="color" name="color">
+                {%for i in colors %}
+                <option value="{{i.id}}">
+                  {{i.name}}
+                </option>
+                {%endfor%}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="text-danger" for="images">Choose Images for Your Products</label>
+              <input type="file" class="form-control" multiple id="imagesselect" name="image" onchange="selectimage()" accept="image/*" multiple>
+            </div>
+            <div class="form-group">
+              <label for="price">Price</label>
+              <input type="text" class="form-control" id="price" name="price" placeholder="Enter price" >
+            </div>
+            <div class="form-group">
+              <label for="stock">Stock</label>
+              <input type="text" class="form-control" id="stock" name="stock" placeholder="Enter stock">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Variant</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Modal  for edit the varient -->
+  {% for var in page %}
+<div class="modal fade" id="editVariantModal{{ var.id }}" tabindex="-1" role="dialog"
+  aria-labelledby="editVariantModalLabel{{ var.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editVariantModalLabel{{ var.id }}">Edit Product Variant</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/admin_c/editproductvarients/{{ var.id }}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="product{{ var.id }}">Product</label>
+            <select class="form-control" id="product{{ var.id }}" name="product">
+              {% for i in products %}
+              <option value="{{ i.id }}" {% if var.product.id == i.id %} selected {% endif %}>
+                {{ i.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="size{{ var.id }}">Size</label>
+            <select class="form-control" id="size{{ var.id }}" name="size">
+              {% for i in sizes %}
+              <option value="{{ i.id }}" {% if var.size.id == i.id %} selected {% endif %}>
+                {{ i.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="color{{ var.id }}">Color</label>
+            <select class="form-control" id="color{{ var.id }}" name="color">
+              {% for i in colors %}
+              <option value="{{ i.id }}" {% if var.color.id == i.id %} selected {% endif %}>
+                {{ i.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="text-danger" for="images{{ var.id }}">Choose Images for Your Products</label>
+            <input type="file" class="form-control" id="images{{ var.id }}" name="image"  multiple>
+          </div>
+          <div class="form-group">
+            <label for="price{{ var.id }}">Price</label>
+            <input type="text" class="form-control" id="price{{ var.id }}" name="price"
+              value="{{ var.price }}" placeholder="Enter price" >
+          </div>
+          <div class="form-group">
+            <label for="stock{{ var.id }}">Stock</label>
+            <input type="text" class="form-control" id="stock{{ var.id }}" name="stock"
+              value="{{ var.stock }}" placeholder="Enter stock">
+          </div>
+          <button type="submit" class="btn btn-primary">Edit Variant</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+
+
+
+
+</body>
+
+
+
+
+
+<script>
+
+  
+    
+    
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</html>
+{% endblock content%}

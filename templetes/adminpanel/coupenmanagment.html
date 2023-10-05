@@ -1,0 +1,285 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add a meta tag for viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-md-2 d-none d-md-block text-light" style="min-height: 100vh; background-color: black;">
+                <div class="selectable-list d-flex flex-column align-items-center mt-5">
+                    <ul class="list-unstyled">
+                        <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-10 col-md-9 col-sm-8" style="overflow-x: auto;">
+                <div class="table-responsive">
+                    <div class="table-title">
+                        <div class="row justify-content-center">
+                            <h3><b>Manage Coupons</b></h3>
+                        </div>
+                    </div>
+                    <table class="table table-striped table-hover table-wrapper">
+                        <thead class="table-bordered">
+                            <tr>
+                                <button class="btn btn-dark" data-target="#exampleModalLong" data-toggle="modal">Add coupen</button>
+
+                            </tr>
+                            <tr>
+                                <th class="bg-dark text-white">No</th>
+                                <!-- <th class="bg-dark text-white">Coupon Description</th> -->
+                                <th class="bg-dark text-white">Coupon Code</th>
+                                <th class="bg-dark text-white">Quantity</th>
+                                <!-- <th class="bg-dark text-white">Coupon Title</th> -->
+                                <th class="bg-dark text-white">Discount Amount</th>
+                                <th class="bg-dark text-white">Discount Percentage</th>
+                                <th class="bg-dark text-white">Valid From</th>
+                                <th class="bg-dark text-white">Valid To</th>
+                                <th class="bg-dark text-white">Maximum Order Amount</th>
+                                <!-- <th class="bg-dark text-white">Created At</th> -->
+                                <!-- <th class="bg-dark text-white">Updated At</th> -->
+                                <th class="bg-dark text-white">Status</th>
+                                <th class="bg-dark text-white">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in page %}
+                            <tr>
+                                <td class="bg-light text-dark">{{ forloop.counter }}</td>
+                                <!-- <td class="bg-light text-dark">{{ i.description }}</td> -->
+                                <td class="bg-light text-dark">{{ i.coupon_code }}</td>
+                                <td class="bg-light text-dark">{{ i.quantity }}</td>
+                                <!-- <td class="bg-light text-dark">{{ i.coupon_title }}</td> -->
+                                <td class="bg-light text-dark">{{ i.discount_amount }}</td>
+                                <td class="bg-light text-dark">{{ i.discount }} % </td>
+                                <td class="bg-light text-dark">{{ i.valid_from }}</td>
+                                <td class="bg-light text-dark">{{ i.valid_to }}</td>
+                                <td class="bg-light text-dark">{{i.maximum_order_amount_the_discount_percenetage_applicable_for }}</td>
+                                <!-- <td class="bg-light text-dark">{{ i.created_at }}</td> -->
+                                <!-- <td class="bg-light text-dark">{{ i.updated_at }}</td> -->
+                                <td class="bg-light text-dark">{{ i.active }}</td>
+                                <td class="bg-light text-dark">
+                                    <button type="submit" class="btn btn-dark" data-toggle="modal"
+                                        data-target="#exampleModalLongedit-{{ i.id }}">Edit</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between ">
+                        <div class="pagination-list">
+                          {% if page.has_previous %}
+                          <a href="?page=1" class="text-dark font-weight-bold">&laquo; First</a>
+                          <a href="?page={{ page.previous_page_number }}" class="text-dark font-weight-bold">Previous</a>
+                          {% endif %}
+                        </div>
+                          
+                          <span class="text-dark font-weight-bold">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                        
+                        <div class="pagination-list border  ">
+                          {% if page.has_next %}
+                          <a href="?page={{ page.next_page_number }}" class="text-dark font-weight-bold">Next</a>
+                          <a href="?page={{ page.paginator.num_pages }}" class="text-dark font-weight-bold">Last &raquo;</a>
+                          {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal for adding the coupon -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: black;">
+                    <h5 class="modal-title text-light font-weight-bold" id="exampleModalLongTitle">Add Coupon</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span class="text-light" aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin_c/coupen_management/" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <input type="text" class="form-control" id="description" name="description" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coupon_code">Coupon Code:</label>
+                            <input type="text" class="form-control" id="coupon_code" name="coupon_code" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coupon_title">Coupon Title:</label>
+                            <input type="text" class="form-control" id="coupon_title" name="coupon_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="discount_type">Discount Type:</label>
+                            <select class="form-control" id="discount_type" name="discount_type">
+                                <option value="amount">Discount Amount</option>
+                                <option value="percentage">Discount Percentage</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="discount_amount_field">
+                            <label for="discount_amount">Discount Amount:</label>
+                            <input type="number" class="form-control" id="discount_amount" name="discount_amount"
+                                value="0">
+                        </div>
+
+                        <div class="form-group" id="discount_percentage_field" style="display: none;">
+                            <label for="discount_percentage">Discount Percentage:</label>
+                            <input type="number" class="form-control" id="discount_percentage"
+                                name="discount_percentage" value="0">
+                        </div>
+
+                        <div class="form-group" id="max_discount_amount_field" style="display: none;">
+                            <label for="max_discount_amount">Max Order Amount the Discount is Applicable for:</label>
+                            <input type="number" class="form-control" id="max_discount_amount"
+                                name="max_discount_amount" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="valid_from">Valid From:</label>
+                            <input type="date" class="form-control" id="valid_from" name="valid_from" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="valid_to">Valid To:</label>
+                            <input type="date" class="form-control" id="valid_to" name="valid_to" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="minimum_order_amount">Minimum Order Amount:</label>
+                            <input type="number" class="form-control" id="minimum_order_amount"
+                                name="minimum_order_amount" value="0" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal for edit the coupen -->
+    {% for i in coupen %}
+    <div class="modal fade" id="exampleModalLongedit-{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: black;">
+                <h5 class="modal-title text-light font-weight-bold" id="exampleModalLongedit-{{ i.id }}">Edit Coupon</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span class="text-light" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin_c/coupen_management_edit/{{i.id}}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <input type="text" class="form-control" id="description" name="description" value="{{i.description}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="coupon_code">Coupon Code:</label>
+                        <input type="text" class="form-control" id="coupon_code" name="coupon_code" value="{{i.coupon_code}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="coupon_title">Coupon Title:</label>
+                        <input type="text" class="form-control" id="coupon_title" name="coupon_title" value="{{i.coupon_title}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount_type">Discount Type:</label>
+                        <select class="form-control" id="discount_type" name="discount_type">
+                            <option value="amount">Discount Amount</option>
+                            <option value="percentage">Discount Percentage</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="discount_amount_field">
+                        <label for="discount_amount">Discount Amount:</label>
+                        <input type="number" class="form-control" id="discount_amount" name="discount_amount"
+                            value="{{i.discount_amount}}">
+                    </div>
+
+                    <div class="form-group" id="discount_percentage_field" style="display: none;">
+                        <label for="discount_percentage">Discount Percentage:</label>
+                        <input type="number" class="form-control" id="discount_percentage"
+                            name="discount_percentage" value="{{i.discount}}">
+                    </div>
+
+                    <div class="form-group" id="max_discount_amount_field" style="display: none;">
+                        <label for="max_discount_amount">Max Order Amount the Discount is Applicable for:</label>
+                        <input type="number" class="form-control" id="max_discount_amount"
+                            name="max_discount_amount" value="{{i.maximum_order_amount_the_discount_percenetage_applicable_for}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="valid_from">Valid From:</label>
+                        <input type="date" class="form-control" id="valid_from" name="valid_from" value="{{i.valid_from}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valid_to">Valid To:</label>
+                        <input type="date" class="form-control" id="valid_to" name="valid_to" value="{{i.valid_to}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="{{i.quantity}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="minimum_order_amount">Minimum Order Amount:</label>
+                        <input type="number" class="form-control" id="minimum_order_amount"
+                            name="minimum_order_amount" value="{{i.minimum_order_amount}}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Edit   Changes</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+    
+
+ 
+
+</body>
+<!-- Include Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    
+</script>
+
+</html>
+{% endblock content %}

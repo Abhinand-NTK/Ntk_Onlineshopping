@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<style>
+  .slidecontainer {
+    width: 12%;
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    width: 800%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #B71C41;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+  }
+
+  /* Style the checkbox and change the tick color */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .checkbox {
+    margin-right: 10px;
+    /* Hide the default checkbox tick */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* Style the tick when the checkbox is checked */
+  .checkbox:checked::before {
+    content: '\2713';
+    /* Unicode checkmark character */
+    font-size: 18px;
+    color: #dc3545;
+    /* Change the tick color to red */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .label {
+    color: #dc3545;
+    font-weight: bold;
+  }
+
+  .red {
+    background-color: #dc3545;
+    border: none;
+    font-weight: 100;
+    color: white;
+    /* Add text color to make it visible */
+    padding: 10px 20px;
+    /* Add padding to adjust the button size */
+    border-radius: 5px;
+    /* Add rounded corners for a nicer look */
+    cursor: pointer;
+  }
+  .product__item {
+    display: flex; /* Use Flexbox to align items */
+    flex-direction: column; /* Stack child elements vertically */
+    height: 100%; /* Make each card take up the full height */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: white; /* Optional: Add a white background color to the cards */
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+
+/* Adjust styles for the inner elements */
+.product_item_pic {
+    flex-grow: 1; /* Allow the image to grow and take up remaining space */
+}
+
+.product_item_text {
+    padding: 15px;
+}
+
+.product {
+  position: relative;
+  display: inline-block;
+}
+
+.product-image {
+  max-width: 100%;
+}
+
+
+.rating1 {
+  position: absolute;
+  top: 20rem;
+  /* Adjust the top position as needed */
+  left: 15rem;
+  /* Adjust the left position as needed */
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  /* Adjust font size as needed */
+  z-index: 2;
+}
+/* Rest of your styling for stars (same as in previous example) */
+
+
+ 
+</style>
+
+<body>
+  <!-- Breadcrumb Begin -->
+  <div class="breadcrumb-option">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="breadcrumb__links">
+            <a href="/products"><i class="fa fa-home"></i> Home</a>
+            <span>Shop</span>
+          </div>
+        </div>
+        <div class="col-lg-8 ">
+          <div class="breadcrumb__links">
+            <div class="row">
+              <div class="col-12 col-md-9 mb-3 p-0 me-0">
+                <form method="POST" action="/products/multiple_filter/{{heading}}">
+                  {%csrf_token%}
+                  <input type="text" name="name_search" id="searchInput" style="z-index: 3;" class="form-control" placeholder="Search for products...">
+                <div id="suggestionsContainer" style="position: absolute; z-index: 3; background-color: #fff;" ></div>
+              </div>
+              <div class="col-12 col-md-3 p-0 ms-0 mb-3">
+                <button class="btn btn-danger w-100" type="submit">Apply</button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Breadcrumb End -->
+
+  <!-- Shop Section Begin -->
+  <section class="shop spad">
+    <div class="container">
+      <div class="row ">
+        <div class="col-lg-3 col-md-3 ">
+          <div class="shop__sidebar">
+            <div class="sidebar__filter">
+              <div class="section-title">
+                <!-- <h4>Shop by price</h4> -->
+                <h4>Filter By</h4>
+                <form action="/products/multiple_filter/{{heading}}" id="myForm" method="POST">
+                  <!-- CSRF token -->
+
+                  {% csrf_token %}
+
+
+                  <div class="checkbox-container">
+                    <input type="checkbox" name="enableFilter" class="checkbox" id="enableFilterCheckbox">
+                    <label for="enableFilterCheckbox">Enable Price Filter</label>
+                  </div>
+
+                  <div class="slidecontainer">
+                    <input type="range" min="200" max="3000" value="300" class="slider" id="myRangeMin"
+                      name="myRangeMin" disabled>
+                    <input type="range" min="300" max="3000" value="300" class="slider" id="myRangeMax"
+                      name="myRangeMax" disabled>
+
+                  </div>
+                  <p class="label">Min ₹: <span id="demoMin">25</span></p>
+                  <p class="label">Max ₹ : <span id="demoMax">75</span></p>
+
+                  <div class="container">
+                    <label for="colorCheckbox" class="font-weight-bold label"> Select Color</label>
+                    <br>
+                    {% for i in color %}
+                    <input type="checkbox" name="colorCheckbox" value="{{i.id}}" class="checkbox"
+                      id="colorCheckbox">{{i.name}}
+                    <br>
+                    {% endfor %}
+                    <label for="sizeCheckbox" class="font-weight-bold label">Choose Size</label>
+                    <br>
+                    {% for i in size %}
+                    <input type="checkbox" name="sizeCheckbox" value="{{i.id}}" class="checkbox"
+                      id="sizeCheckbox">{{i.name}}
+                    <br>
+                    {%endfor %}
+
+                    <label for="sizeCheckbox" class="font-weight-bold label">Choose Brand</label>
+                    <br>
+                    <br>
+                    <button type="submit" class="red mt-2" id="submitButton">Submit</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-9 col-md-9 " id="hide">
+
+
+          <div class="row">
+            
+            {% for i,y,o in zipped_data%}
+
+            <div class="col-lg-4 col-md-6 card " style="height: 36rem;">
+              <div class="product__item ">
+                <div class="product__item__pic set-bg" style="width: 100;" data-setbg=""
+                  id="product_image-{{forloop.counter}}">
+                  <img src="{{i.images.url}}" alt="" style="width: 100%; height: 25rem;">
+                  {% if forloop.counter <= 3 and page.number == 1  %}
+                  <div class="label new">New</div>
+                  {% endif %}
+                  <ul class="product__hover" >
+                  </ul>
+                <div class="rating1">
+
+                  {% if o == none %}
+                  0
+                 {%else%}
+                 {{o}}
+                 {%endif%}
+                   <li class="fa fa-star"></li>
+              </div>
+
+              
+                </div>
+                <div style="padding-left: 1rem;">
+                  <h6 class="mt-4 "><a class="font-weight-bold fs-6 text-black"
+                    href="/products/products_details/{{i.id}}">₹ {{y}}</a></h6>
+                <h6>Sizes:
+                  {% for key, value in sizes.items %}
+                  {%if key == i.name%}
+                  {% for size in value %}
+                  {{size}}
+                  {% endfor %}
+                  {% endif %}
+                  {% endfor %}
+                </h6>
+                <h6><a class="text-black" href="/products/products_details/{{i.id}}">{{i.name}}</a></h6>
+                </div>
+              </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:9 %}
+          </div>
+          {% endif %}
+          {% endfor %}
+          <div class="row property__gallery">
+          
+          </div>
+          
+        </div>
+        <div class="col-lg-9 col-md-9" id="compensate">
+          <div id="product-images">
+            {% for product in data.products %}
+            <img src="{{ product.image }}" alt="{{ product.name }}">
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+
+  </section>
+
+  <div class="d-flex justify-content-between ">
+    <div class="pagination-list">
+      {% if page.has_previous %}
+      <a href="?page=1" class="text-dark font-weight-bold">&laquo; First</a>
+      <a href="?page={{ page.previous_page_number }}" class="text-dark font-weight-bold">Previous</a>
+      {% endif %}
+    </div>
+      
+      <span class="text-dark font-weight-bold">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    
+    <div class="pagination-list  ">
+      {% if page.has_next %}
+      <a href="?page={{ page.next_page_number }}" class="text-dark font-weight-bold">Next</a>
+      <a href="?page={{ page.paginator.num_pages }}" class="text-dark font-weight-bold">Last &raquo;</a>
+      {% endif %}
+    </div>
+</div>
+
+
+</body>
+{% endblock%}
+
+
+
+</html>

@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+
+<style>
+    .product__big__img {
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.3s ease;
+        cursor: zoom-in;
+        position: relative;
+    }
+
+    .zoomed-image-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.9);
+        z-index: 1000;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .zoomed-image {
+        max-width: 100%;
+        max-height: 80vh;
+        cursor: zoom-out;
+        position: relative;
+    }
+
+    .product__big__img:hover {
+        cursor: zoom-in;
+    }
+
+    .product__big__img.zoomed {
+        cursor: zoom-out;
+    }
+</style>
+
+<body>
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <a href="#">Women’s </a>
+                        <span>Essential structured blazer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="product__details__pic">
+
+                        <div class="product__details__pic__left product__thumb nice-scroll">
+                           
+
+                        </div>
+                        <div class="product__details__slider__content owl-dots">
+                            <div class="product__details__pic__slider owl-carousel owl-dots">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="product__details__text">
+                        <h3>{{i.color}}<span>{{i.product.brand }}</span></h3>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <span>( 138 reviews )</span>
+                        </div>
+                        <div class="product__details__price"> ₹ {{i.price}} <span> ₹ 83.0</span></div>
+                        <p>{{i.product.description}}</p>
+
+                        <form action="/cart/addtocart/{{ i.id }}" method="POST">
+                            {% csrf_token %}
+                            <div class="product__details__button">
+                                <div class="quantity">
+                                    <span>Quantity:</span>
+                                    <div class="pro-qty">
+                                        <input type="number" name="quantity" value="1">
+                                    </div>
+                                </div>
+                                <button type="submit" class="cart-btn"><span class="icon_bag_alt"></span> Add to
+                                    cart</button>
+                                <ul>
+                                    <li><a href="#"><span class="fa fa-heart"></span></a></li>
+                                    <li><a href="#"><span class="fa fa-adjust"></span></a></li>
+                                </ul>
+                            </div>
+                        </form>
+
+
+                        <div class="product__details__widget">
+                            <ul>
+                                <li>
+                                    <span>Availability:</span>
+                                    <div class="stock__checkbox">
+                                        {{i.stock}} items in
+                                        In Stock
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Available color:</span>
+                                    <div class="color__checkbox d-flex justify-content-around">
+
+
+
+
+
+                                        {% for varient_data in product_vareint_data %}
+                                        <div>
+                                            <a href="{% url 'filtering_varient' varient_data.color product_variants %}" class="text-black font-weight-bold">{{ varient_data.color }}</a>
+                                        </div>
+                                        
+                                        
+                                        {% endfor %}
+
+                                       
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Available size:</span>
+                                    <div class="size__btn">
+                                        {% for varient_data in product_vareint_data %}
+
+                                        <label for="xs-btn" class="active">
+                                            <input type="radio" id="xs-btn">
+                                            {{ varient_data.size }}
+                                        </label>
+
+                                        {% endfor %}
+                                        
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Promotions:</span>
+                                    <p>Free shipping</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="product__details__tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews ( 2 )</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                <h6>Description</h6>
+                                <p>{{i.product.description}}</p>
+                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+                                    dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+                                    quis, sem.</p>
+                            </div>
+                            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                                <h6>Specification</h6>
+                                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
+                                    quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
+                                    Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
+                                    voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
+                                    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
+                                    consequat massa quis enim.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+                                    dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+                                    quis, sem.</p>
+                            </div>
+                            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                                <h6>Reviews ( 2 )</h6>
+                                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
+                                    quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
+                                    Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
+                                    voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
+                                    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
+                                    consequat massa quis enim.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+                                    dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+                                    quis, sem.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- Product Details Section End -->
+
+
+    <!-- Instagram End -->
+
+
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+{% endblock%}
+
+<script>
+    
+</script>
+
+</html>

@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<style>
+    .modal-header {
+        background-color: #B71C41;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<body>
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Personal information</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="checkout__order">
+                        <h5><a class="text-dark" href="/myorder/">Your order</a></h5>
+                        <div class="dropdown">
+                            <h5><a class="text-dark" href="#">Account Settings</a></h5>
+                            <div class="dropdown-content">
+                                <a class="dropdown-item" href="/myprofile/">Personal Information</a>
+                                <a class="dropdown-item" href="">Manage Address</a>
+                            </div>
+                        </div>
+                        <h5>Payments</h5>
+                        <h5>My Stuff</h5>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <h5 class="d-flex justifycontent-between font-weight-bold">Personal information/Coupens</h5>
+                    <!-- <h5><a class="text-success" data-toggle="modal" data-target="#exampleModal" type="submit"
+                                href="">Add</a>&nbsp;&nbsp;&nbsp; New Addess</h5> -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="checkout__form__input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-12 col-md-8 col-sm-8 ">
+                            <div class="checkout__form__input">
+                                <div class="container borderd mt-3">
+                                    <div class="container">
+                                        {% for coupen in coupens %}
+
+                                        <div class="border p-3 bg-danger">
+                                            <div class="font-weight-bold text-light">
+                                            {{coupen.coupon_title}}
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <div class="row">
+
+                                                </div>
+                                                <div>
+
+                                                </div>
+
+                                                <!-- Add other information here if needed -->
+                                            </div>
+
+                                        </div>
+
+                                        <div class="border p-3">
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <div class="row">
+
+                                                    <!-- <div class="font-weight-bold underline text-decoration-underline">{{coupen.coupon_title}}</div> -->
+                                                    <div>{{coupen.description}}</div>
+                                                    <div>Coupon_code :-{{coupen.coupon_code}} <span class="font-weight-bold"> -- : Choose The Coupen code for get offer</span> </div>
+                                                    <div>Minimum_order_amount :-{{coupen.minimum_order_amount}}</div>
+                                                    <div>{{coupen.}}</div>
+                                                    <div>{{coupen.}}</div>
+                                                    
+
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </section>
+    <!-- Checkout Section End -->
+
+
+    <script>
+        function toggleReturnReason() {
+            var returnReasonBox = document.getElementById('return-reason-box');
+            if (returnReasonBox.style.display === 'none') {
+                returnReasonBox.style.display = 'block';
+            } else {
+                returnReasonBox.style.display = 'none';
+            }
+        }
+
+        function togglecancelReason() {
+            var cancelReasonBox = document.getElementById('cancel-reason-box');
+            if (cancelReasonBox.style.display === 'none') {
+                cancelReasonBox.style.display = 'block';
+            } else {
+                cancelReasonBox.style.display = 'none';
+            }
+        }
+
+        function toggleReturnSingleReason() {
+            var returnsingleReasonBox = document.getElementById('return_single_reason');
+            if (returnsingleReasonBox.style.display === 'none') {
+                returnsingleReasonBox.style.display = 'block';
+            } else {
+                returnsingleReasonBox.style.display = 'none';
+            }
+        }
+
+
+    </script>
+
+    {% endblock %}
+
+</body>
+
+
+
+</html>

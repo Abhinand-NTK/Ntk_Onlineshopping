@@ -1,0 +1,118 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <link rel="icon" type="image/x-icon"
+        href="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg"
+        style="border-radius:50% ;">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ntk Onliine-Shopping </title>
+
+    <!-- Google Font -->
+    <link href="{% static 'https://fonts.googleapis.com/css2?family=Cookie&display=swap' %}" rel="stylesheet">
+    <link
+        href="{% static 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap' %}"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <style>
+        * {
+            text-decoration: none !important;
+        }
+
+        /* Hide the scrollbar in Chrome and Safari */
+        *::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: transparent;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{ static 'css/elegant-icons.css' }" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/includesdropdown.css' %}" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<body>
+
+    {% include 'includes/navbar.html' %}
+
+    {% block content %}
+
+    <!-- content -->
+
+    {% endblock %}
+    {% include 'includes/footer.html' %}
+
+</body>
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'js/mixitup.min.js' %}"></script>
+<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'js/jquery.slicknav.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/jquery.nicescroll.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/button.js' %}"></script>
+<script src="{% static 'js/cartpage.js' %}"></script>
+<script src="{% static 'js/categorymanagement.js' %}"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
+<script src="{% static 'js/mulltiplefilter.js' %}"></script>
+<script src="{% static 'js/order_user.js' %}"></script>
+<script src="{% static 'js/orderdeatails.js' %}"></script>
+<script src="{% static 'js/productdetails.js' %}"></script>
+<script src="{% static 'js/products_filter.js' %}"></script>
+<script src="{% static 'js/wishlist.js' %}"></script>
+<script src="{% static 'js/validationaddress.js' %}"></script>
+<script src="{% static 'js/quantitycheckproductdetails.js' %}"></script>
+<script src="js/productdetails.js"></script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+
+
+
+{% block scripts %}
+
+
+{% endblock scripts %}
+
+{% comment %} Razorpay {% endcomment %}
+
+<script src="{% static 'js/checkout.js' %}"></script>
+
+
+<!-- nav bar -->
+
+
+
+
+
+
+
+
+<!-- footer -->
+
+</html>

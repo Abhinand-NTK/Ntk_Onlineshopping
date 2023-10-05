@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<style>
+    .modal-header {
+        background-color: #B71C41;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<body>
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Manage Adress</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="checkout__order">
+                        <h5><a class="text-dark" href="/myorder/">Your order</a></h5>
+                        <div class="dropdown">
+                            <h5><a class="text-dark" href="#">Account Settings</a></h5>
+                            <div class="dropdown-content">
+                                <a class="dropdown-item" href="/myprofile/">Personal Information</a>
+                                <a class="dropdown-item" href="/manageadress/">Manage Address</a>
+                            </div>
+                        </div>
+                        <h5><a class="text-dark" href="/mywallet">Mywallet</a></h5>
+                        <h5><a class="text-dark" href="/mywishlist/0">mywishlist</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <h2 class="d-flex justifycontent-between">Manage Address</h5>
+                        <h5><a class="text-success" data-toggle="modal" data-target="#exampleModal" type="submit"
+                                href="">Add</a>&nbsp;&nbsp;&nbsp; New Addess</h5>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="checkout__form__input">
+                                </div>
+                            </div>
+                        </div>
+                        {% if address_user %}
+                        <div class="row mt-3">
+                            <div class="col-lg-12 col-md-8 col-sm-8">
+                                <div class="checkout__form__input">
+                                    {% for i in address_user %}
+                                    <div class="border p-3">
+                                        <a data-toggle="modal" class="text-success" data-target="#editModal-{{i.id}}"
+                                            href="#">Edit</a>
+                                        <a class="text-danger" href="/manageadress_delete/{{ i.id }}">Delete</a>
+                                        <hr>
+                                        <span>{{ i.first_name }} {{i.last_name}}</span><span>&nbsp;&nbsp;{{i.phonenumber }}</span>
+                                        <p>{{ i.address }} {{ i.zip_code }}</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {%else%}
+                        <div class="row mt-3">
+                            <div class="col-lg-12 col-md-8 col-sm-8">
+                                <div class="checkout__form__input bg-danger" style="height: 5rem;">
+                                    <p class="text-light text-center p-4">Address Field is Empty!! <strong>Add a new
+                                            address</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        {%endif%}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                </div>
+            </div>
+    </section>
+    <!-- Checkout Section End -->
+
+
+    <!-- Modal  for add the address-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-light font-weight-5" id="exampleModalLabel">Add Address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/manageadress/" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="form-group col-lg-6 col-6 col-md-6">
+                                <label for="firstname">Firstname</label>
+                                <input type="text" class="form-control" id="firstname" name="firstname">
+                            </div>
+                            <div class="form-group col-lg-6 col-6 col-md-6">
+                                <label for="lastname ">Lastname</label>
+                                <input type="text" class="form-control" id="lastname" name="lastname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Mobile_number</label>
+                            <input type="text" class="form-control" id="phonenumber" name="phonenumber" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="4"></textarea required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pin">Town</label>
+                            <input type="text" class="form-control" id="town" name="town" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="locality">Zip_code</label>
+                            <input type="text" class="form-control" id="zipcode" name="zipcode" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">Nearbylocation</label>
+                            <input type="text" class="form-control" id="nearbylocation" name="nearbylocation" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">District</label>
+                            <input type="text" class="form-control" id="district" name="district" required>
+                        </div>
+                    <button type="submit" class="btn btn-primary">Add Address</button>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Modal for edit the address -->
+
+
+{% for i in address_user %}
+
+<div class="modal fade" id="editModal-{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/manageadress_edit/{{ i.id }}" method="POST">
+                    {% csrf_token %}
+                        <div class="row">
+                            <div class="form-group col-lg-6 col-6 col-md-6">
+                                <label for="firstname">Firstname</label>
+                                <input type="text" class="form-control" id="firstname" value="{{i.first_name}}" name="firstname">
+                            </div>
+                            <div class="form-group col-lg-6 col-6 col-md-6">
+                                <label for="lastname ">Lastname</label>
+                                <input type="text" class="form-control" id="lastname" value="{{i.lastname}}" name="lastname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Mobile_number</label>
+                            <input type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{i.phonenumber}}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" id="address"  name="address" value="{{i.address}}" rows="4">{{i.address}}</textarea required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pin">Town</label>
+                            <input type="text" class="form-control" id="town" value="{{i.town}}" name="town" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="locality">Zip_code</label>
+                            <input type="text" class="form-control" id="zipcode" value="{{i.zip_code}}" name="zipcode" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">Nearbylocation</label>
+                            <input type="text" class="form-control" id="nearbylocation" value="{{i.nearbylocation}}" name="nearbylocation" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">District</label>
+                            <input type="text" class="form-control" id="district" value="{{i.district}}" name="district" req>
+                        </div>
+                    <button type="submit" class="btn btn-primary">Edit Address</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endblock%}
+
+</body>
+
+
+
+</html>

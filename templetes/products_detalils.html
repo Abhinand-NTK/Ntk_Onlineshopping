@@ -1,0 +1,598 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
+
+<!-- Bootstrap JS and Popper.js -->
+<link rel="stylesheet" type="text/css" href="{% static 'your-stylesheet.css' %}">
+
+
+
+
+<style>
+    .star {
+        font-size: 24px;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .star.selected {
+        color: gold;
+    }
+
+    .image-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    #myimage {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .zoom-lens {
+        display: none;
+        position: absolute;
+        width: 100px;
+        /* Adjust the lens size */
+        height: 100px;
+        /* Adjust the lens size */
+        border: 2px solid #d4d4d4;
+        background: rgba(255, 255, 255, 0.6);
+        /* Adjust the lens background color and opacity */
+        pointer-events: none;
+    }
+
+    .review-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        max-width: 100%;
+        /* Adjust the maximum width as needed */
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .user-info img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .rating .star1 {
+        font-size: 20px;
+        color: #FFD700;
+        /* Adjust the star color as needed */
+    }
+
+    .review-content {
+        margin-bottom: 10px;
+    }
+
+    .picbox {
+        border-radius: 2px;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+
+    }
+    .quantity {
+        display: inline-flex;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 40px;
+        padding: 5px 10px;
+        border: 2px solid #000; 
+    }
+
+    .qtybtn {
+        width: 30px;
+        height: 30px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    #quantity {
+        width: 40px;
+        height: 40px;
+        background-color: #fff;
+        color: #f20c0c;
+        border: none;
+        border-radius: 20px;
+        text-align: center;
+        font-size: 18px;
+        margin: 0 10px;
+    }
+</style>
+
+
+
+<body>
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <a href="#">Women’s </a>
+                        <span>Essential structured blazer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column">
+                                {% for product in images %}
+                                {% if forloop.counter <= 3 %} <img class="imagetochange" src="{{product.images.url}}"
+                                    alt="Cant loign" id="left-{{ forloop.counter }}"
+                                    onclick="leftright('left-{{ forloop.counter }}')">
+                                    {% endif %}
+                                    {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="image-container">
+                                <img src="{{product.images.url}}" class="h-75" alt="No images" id="myimage">
+                                <div id="zoom-lens" class="zoom-lens"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="img-zoom-container">
+                        <div id="myresult" class="img-zoom-result"></div>
+                    </div>
+                    <div class="product__details__text" id="details__text">
+                        {% for product_variant in product_variants %}
+                        {% if forloop.counter == 1 %}
+                        <h4 id="productname font-weight-bold">{{ product_variant.product.name }}<span>{{ product_variant.product.brand }}</span></h3>
+                        {% endif %}
+                        {% endfor %}
+                        {% for product_variant in product_variants %}
+                        {% if forloop.counter == 1 %}
+                        <div class="product__details__price" id="price"> ₹ {{product_variant.price}} <span> ₹
+                                83.0</span></div>
+                        <p>{{product_variant.product.description}}</p>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if messages %}
+                        {% for message in messages %}
+                          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                              {{ message }}
+                          </div>
+                         {% endfor %}
+                         {% endif %}
+
+                        {% for product_variant in product_variants %}
+                        {% if forloop.counter == 1 %}
+
+                        <div class="product__details__button">
+                            <form id="cartForm" action="/cart/addtocart/{{ product_variant.id }}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="quantity">
+                                    <button type="button" class="dec qtybtn" onclick="decrementQuantity()">-</button>
+                                    <input type="number" name="quantity" id="quantity" value="1" readonly>
+                                    <button type="button" class="inc qtybtn" onclick="incrementQuantity()">+</button>
+                                </div>
+                                
+                                <button type="submit" class="cart-btn"><span class="icon_bag_alt"></span> Add to
+                                    cart</button>
+                            </form>
+                            <ul>
+                                {% if product_variant.checkcolor %}
+                                <li>
+                                    <button id="colorchange" class="btn btn-light border-none rounded-circle border-1"
+                                        style="color: red;border-width: 2px;"
+                                        onclick="Wishlist('{{product_variant.id}}')" data-bs-toggle="popover"
+                                        data-bs-placement="bottom" data-bs-trigger="manual" data-bs-content="">
+                                        <span class="fa fa-heart"></span>
+                                    </button>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <button id="colorchange" class="btn btn-light border-none rounded-circle border-1"
+                                        style="color: black;border-width: 2px;"
+                                        onclick="Wishlist('{{product_variant.id}}')" data-bs-toggle="popover"
+                                        data-bs-placement="bottom" data-bs-trigger="manual" data-bs-content="">
+                                        <span class="fa fa-heart"></span>
+                                    </button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {%endif%}
+                        {%endfor%}
+                        <div class="product__details__widget">
+                            <ul>
+                                <li>
+                                    <span>Available color:</span>
+                                    <div class="color__checkbox d-flex justify-content-start">
+                                        {% for varient_data in product_vareint_data %}
+                                        <div>
+                                            <a href="" class="text-black font-weight-bold">{{ varient_data.color }}{% if forloop.counter > 0%},{% endif %}</a>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Available size:</span>
+                                    <div class="size__btn font-weight-bold">
+                                        {% for varient_data in product_vareint_data %}
+
+                                        <label for="xs-btn" class="active">
+                                            <input type="radio" id="xs-btn">
+                                            {{ varient_data.size }}
+                                        </label>
+                                        {% endfor %}
+
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Promotions:</span>
+                                    <p class="font-weight-bold">Free shipping</p>
+                                </li>
+                                <div class="d-flex ">
+                                    {% for variant_id, data in product_variant_images.items %}
+                                    <div class="ml-4" id="product-images-container ml-5"
+                                        onmouseenter="ready('{{ variant_id }}', '{{ data.1 }}')">
+                                        {% with image_url=data.0 %}
+                                        <img data-variant-id="{{ variant_id }}" data-color="{{ data.1 }}"
+                                            class="product__big__img" src="{{ image_url }}" alt=""
+                                            style="width: 5rem; height: 5rem;">
+                                        <li class="text-center font-weight-bold">{{ data.1 }}</li>
+                                        {% endwith %}
+                                    </div>
+                                    {% endfor %}
+                                   
+                                </div>
+                                <div class="d-flex align-content-between ml-4">
+                                    {% for item in product_vareint_data %}
+                                {% if item.stock > 0 %}
+                                <li class="font-weight-bold text-success ml-4">In Stock,</li>
+                                {% else %}
+                                <li class="font-weight-bold text-danger">Out of Stock,</li>
+                                {% endif %}
+                                {% endfor %}
+
+                                </div>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="product__details__tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active font-weight-bold text-danger" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link font-weight-bold text-danger" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link font-weight-bold text-danger" data-toggle="tab" href="#tabs-3" role="tab">Reviews ( {{ratingcount}} )</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                <h6 class="">Description</h6>
+                                {% for product_variant in product_variants %}
+                                {% if forloop.counter == 1 %}
+                                <p>{{product_variant.product.description}}</p>
+                                {% endif %}
+                                {% endfor %}
+                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+                                    dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+                                    quis, sem.</p>
+                            </div>
+                            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                                <h6>Specification</h6>
+                                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
+                                    quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
+                                    Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
+                                    voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
+                                    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
+                                    consequat massa quis enim.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+                                    dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+                                    quis, sem.</p>
+                            </div>
+                            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                                <div class="d-flex justify-content-lg-start">
+                                    <div class="md-col-4  h-50 review-content">
+                                        {% if ratingall %}
+                                        {% for variant_id, data in product_variant_images.items %}
+                                        <div id="product-images-container ml-5" class="picbox mt-2"
+                                            onmouseenter="ready('{{ variant_id }}', '{{ data.1 }}')">
+                                            {% with image_url=data.0 %}
+                                            <img data-variant-id="{{ variant_id }}" data-color="{{ data.1 }}"
+                                                class="product__big__img mt-5" src="{{ image_url }}" alt=""
+                                                style="width: 5rem; height: 5rem;">
+                                            <p class="text-weight-bold text-center">{{data.1}}</p>
+                                            {% endwith %}
+                                        </div>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="md-col-8">
+                                        {% for rating in ratingall %}
+                                        <div class="review-box ">
+                                            <div class="user-info">
+                                                <h4>{{ rating.user.first_name }} {{ rating.user.lastname }}</h4>
+                                            </div>
+                                            <div class="rating">
+                                                {% if rating.rating_user == 5 %}
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                {% elif rating.rating_user == 1 %}
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                {% elif rating.rating_user == 2 %}
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                {% elif rating.rating_user == 3 %}
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                {% elif rating.rating_user == 4 %}
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                <span class="star1">&#9733;</span> <!-- Filled star -->
+                                                {% elif rating.rating_user == 0 %}
+                                                <span class="star">&#9733;</span> <!-- Filled star -->
+                                                <span class="star">&#9733;</span> <!-- Filled star -->
+                                                <span class="star">&#9733;</span> <!-- Filled star -->
+                                                <span class="star">&#9733;</span> <!-- Filled star -->
+                                                <span class="star">&#9733;</span> <!-- Filled star -->
+                                                {% endif %}
+                                            </div>
+                                            <div class="review-content">
+                                                <p>{{ rating.review_comment }}</p>
+                                            </div>
+
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="ratingwindow1112">
+                            <h3>Rate and Review This Product</h3>
+                            <form method="post" action="" id="ratingForm">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="{{ rating_form.rating_user.id_for_label }}">Rating:</label>
+                                    <div id="rating" class="rating">
+                                        <span data-value="1" class="star">&#9733;</span>
+                                        <span data-value="2" class="star">&#9733;</span>
+                                        <span data-value="3" class="star">&#9733;</span>
+                                        <span data-value="4" class="star">&#9733;</span>
+                                        <span data-value="5" class="star">&#9733;</span>
+                                    </div>
+                                    <input type="hidden" id="id_rating_user" name="{{ rating_form.rating_user.name }}"
+                                        value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ rating_form.review_comment.id_for_label }}">Review
+                                        Comment:</label>
+                                    {{ rating_form.review_comment }}
+                                    <input type="hidden" name="{{ rating_form.review_comment.name }}"
+                                        id="review_comment" value="">
+                                </div>
+                                <button class="btn btn-primary" type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        </div>
+    </section>
+    <input type="hidden" name="" id="varient_id" value="">
+    <input type="hidden" name="" id="rating_data" value="{{rating}}">
+    <input type="hidden" name="" id="order_list_id" value="{{order_list_id}}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ratingForm = document.getElementById('ratingForm');
+            const ratingInput = document.getElementById('id_rating_user');
+            const stars = ratingForm.getElementsByClassName('star');
+            const reviewCommentInput = document.getElementById('review_comment');
+
+            const reviewCommentField = document.querySelector('[name="{{ rating_form.review_comment.name }}"]');
+
+            varient_id = document.getElementById('varient_id')
+
+
+            // Initialize the rating value
+            let currentRating = parseInt(ratingInput.value);
+            updateStars(currentRating);
+
+            ratingForm.addEventListener('click', function (event) {
+                const selectedStar = event.target;
+
+                if (selectedStar.classList.contains('star')) {
+                    const ratingValue = parseInt(selectedStar.getAttribute('data-value'));
+                    currentRating = ratingValue;
+                    ratingInput.value = currentRating;
+
+                    // Update star styles based on the selected rating
+                    updateStars(currentRating);
+                }
+            });
+
+            ratingForm.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get the rating and review comment values
+
+                const ratingValue = ratingInput.value;
+                const reviewComment = reviewCommentInput.value;
+
+
+                // Prepare the data to send to the backend
+                const formData = {};
+                formData['rating'] = ratingValue;
+                formData['review_comment'] = reviewCommentField.value;
+
+                const jsonData = JSON.stringify(formData);
+
+
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                const headers = new Headers({
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                });
+
+
+
+                varient_idvalue = varient_id.value
+
+
+
+
+                const url = `/rating/${varient_idvalue}`;
+
+                fetch(url, {
+                    method: 'POST',
+                    body: jsonData,
+                    headers: headers,
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Handle success, e.g., show a success message
+                            console.log('Rating submitted successfully');
+                            // You can redirect the user or display a success message here
+                            hide_review_box.style.display = 'none'
+
+                            ratingForm.reset()
+
+                        } else {
+                            // Handle errors, e.g., show an error message
+                            console.error('Error submitting rating');
+                            //hide_review_box.style.display = 'none'
+
+                        }
+                    })
+                    .catch(error => {
+                        // Handle network or other errors
+                        console.error('Error:', error);
+                        //hide_review_box.style.display = 'none'
+
+                    });
+            });
+
+            // Function to update star styles
+            function updateStars(ratingValue) {
+                for (let i = 0; i < stars.length; i++) {
+                    const star = stars[i];
+                    if (i < ratingValue) {
+                        star.classList.add('selected');
+                    } else {
+                        star.classList.remove('selected');
+                    }
+                }
+            }
+        });
+
+    var proQty = $('.pro-qty');
+	proQty.prepend('<span class="dec qtybtn">-</span>');
+	proQty.append('<span class="inc qtybtn">+</span>');
+	proQty.on('click', '.qtybtn', function () {
+		var $button = $(this);
+		var oldValue = $button.parent().find('input').val();
+
+        console.log(oldValue)
+        console.log(oldValue)
+        console.log(oldValue)
+        console.log(oldValue)
+
+		if ($button.hasClass('inc')) {
+			var newVal = parseFloat(oldValue) + 1;
+		} else {
+			// Don't allow decrementing below zero
+			if (oldValue > 1) {
+				var newVal = parseFloat(oldValue) - 1;
+			} else {
+				newVal = 1;
+			}
+		}
+		$button.parent().find('input').val(newVal);
+    });
+    
+
+    </script>
+
+
+
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/productdetails.js"></script>
+
+
+    <script>
+
+    </script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+{% endblock%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+</html>

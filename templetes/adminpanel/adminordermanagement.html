@@ -1,0 +1,117 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+
+<body>
+<div class="mt-2">
+    <div class="row" style="height: 120vh;"> 
+        <div class="col-md-2  d-none d-md-block" style="background-color: black;">
+            <div class="selectable-list text-light d-flex justify-content-center">
+                <ul class="list-unstyled mt-5">
+                    <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+                    <!-- Add more list items as needed -->
+                </ul>
+            </div>
+            
+
+        </div>
+        <div class="col-lg-10 col-md-9 col-sm-8" style="overflow-x: auto;">
+            <div class="d-flex justify-content-center">
+                <div class="table-wrapper">
+                    <div class="table-title">
+                        <div style="width: 170vh;" class="row d-flex justify-content-center">
+                            <div>
+                                <h3><b>Manage Orders</b></h3>
+                            </div>
+                        </div>
+                    </div> 
+                    <h2>Sales Report </h1>
+                    <form method="post" action="{% url 'generate_sales_report_pdf' %}">
+                        {% csrf_token %}
+                        <label for="start_date">Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                
+                        <label for="end_date">End Date:</label>
+                        <input type="date" id="end_date" name="end_date" required>
+                
+                        <button class="btn btn-dark" type="submit"> PDF Report</button>
+                    </form>
+                
+                    {% if report_generated %}
+                        <a href="{{ report_download_url }}" download="sales_report.pdf">
+                            <button>Download Report</button>
+                        </a>
+                    {% endif %}
+
+                    <table class="table table-striped table-hover table-wrapper">
+                        <thead class="table table-bordered text-light bg-dark">
+                            <tr>
+                                
+                                <th>Sr.No</th>
+                                <th>Date</th>
+                                <th>Order id</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Payment Mode</th>
+                                <th>Status</th>
+                                <th>Detailes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in page %}
+                            <tr>
+                                
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{i.created}}</td>
+                                <td>{{i.order_id}}</td>
+                                <td>{{ i.user.first_name }} {{ i.user.lastname }}</td>
+                                <td>{{ i.paid_amount }}</td>
+                                <td class="text-center">{{ i.payement.payement_method }}</td>
+                                <td>{{ i.status }}</td>
+                                <td><a href="/admin_c/orderdetailsmanagement/{{i.order_id}}"><button class="btn btn-dark" type="submit">Check</button></a></td>
+                                <!-- <td>
+                                    <a href="#editEmployeeModal-{{ forloop.counter }}" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                    <a href="#deleteEmployeeModal-{{ forloop.counter }}" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                </td> -->
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between ">
+                        <div class="pagination-list">
+                          {% if page.has_previous %}
+                          <a href="?page=1" class="text-dark font-weight-bold">&laquo; First</a>
+                          <a href="?page={{ page.previous_page_number }}" class="text-dark font-weight-bold">Previous</a>
+                          {% endif %}
+                        </div>
+                          
+                          <span class="text-dark font-weight-bold">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                        
+                        <div class="pagination-list border  ">
+                          {% if page.has_next %}
+                          <a href="?page={{ page.next_page_number }}" class="text-dark font-weight-bold">Next</a>
+                          <a href="?page={{ page.paginator.num_pages }}" class="text-dark font-weight-bold">Last &raquo;</a>
+                          {% endif %}
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body>
+</html>
+{% endblock content%}

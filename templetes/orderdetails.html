@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<style>
+    .modal-header {
+        background-color: #B71C41;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<body>
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Personal information</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="checkout__order">
+                        <h5><a class="text-dark" href="/myorder/">Your order</a></h5>
+                        <div class="dropdown">
+                            <h5><a class="text-dark" href="#">Account Settings</a></h5>
+                            <div class="dropdown-content">
+                                <a class="dropdown-item" href="/myprofile/">Personal Information</a>
+                                <a class="dropdown-item" href="">Manage Address</a>
+                            </div>
+                        </div>
+                        <h5><a class="text-dark" href="/mywallet">Mywallet</a></h5>
+                        <h5><a class="text-dark" href="/mywishlist/0">mywishlist</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <h5 class="d-flex justifycontent-between font-weight-bold">My Order/Order details</h5>
+                    <!-- <h5><a class="text-success" data-toggle="modal" data-target="#exampleModal" type="submit"
+                                href="">Add</a>&nbsp;&nbsp;&nbsp; New Addess</h5> -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="checkout__form__input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-12 col-md-8 col-sm-8 ">
+                            <div class="checkout__form__input">
+                                <div class="container borderd mt-3">
+                                    <div class="container">
+                                        <div class="border p-3">
+                                            <div class="font-weight-bold">
+                                                Order id: {{ details.order_id }}
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <div class="row">
+                                                    <div>Customer Name: {{ details.address.first_name }}
+                                                        {{ details.address.last_name }} </div>
+                                                    <div> {{ details.address.phonenumber }}</div>
+                                                    <div> {{ details.address.address }}</div>
+                                                    <div> {{ details.address.town }}</div>
+                                                    <div> {{ details.address.zip_code }}</div>
+                                                    <div> {{ details.address.district }}</div>
+                                                    <div> {{ details.address.town }}</div>
+                                                </div>
+                                                <div>
+
+                                                </div>
+
+                                                <!-- Add other information here if needed -->
+                                            </div>
+
+                                        </div>
+                                        <div class="border p-3">
+                                            {% for item in orders %}
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <div class="row">
+                                                    <div class="col-md-2 col-4">
+                                                        <img src="{{ item.variant.product.images.url }}" alt=""
+                                                            class="img-fluid">
+                                                    </div>
+                                                    <div class="col-md-3 col-8">
+                                                        <p><strong>Size:</strong> {{ item.variant.size }}</p>
+                                                        <p><strong>Color:</strong> {{ item.variant.color }}</p>
+                                                    </div>
+                                                    <div class="col-md-2 col-6">
+                                                        <p><strong>Order Amount:</strong> {{ item.order_id.paid_amount}}
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-2 col-6">
+                                                        <p><strong>₹ For each:</strong> {{ item.product_price }}</p>
+                                                    </div>
+                                                    <div class="col-md-1 col-4">
+                                                        <p><strong>Quantity:</strong> {{ item.quandity }}</p>
+                                                    </div>
+                                                    <div class="col-md-3 col-12">
+                                                        {% if item.return_request == False %}
+                                                        <p><strong>Status:</strong> {{ item.order_id.status }}</p>
+                                                        {% elif item.return_request == True and item.return_accept == False %}
+                                                        <p><strong>Status:</strong>  Return Requested </p>
+                                                        {% elif item.return_accept == True %}
+                                                        <p><strong>Status:</strong>  Return Approved & Refunded </p>
+                                                        {% endif %}
+                                                        {% if not item.return_request and details.status == 'Delivered' %}
+                                                        <a class="btn btn-danger text-light font-weight-bold"
+                                                            onclick="toggleReturnSingleReason();">Return Single</a>
+                                                        {% endif %}
+                                                       
+                                                        <!-- Display a message or information related to the return request -->
+                                                        <!-- <p>Return Requested</p> -->
+                                                    </div>
+
+                                                    <div id="return_single_reason" style="display: none;">
+                                                        <form method="POST"
+                                                            action="{% url 'returnindivudal' item.id %}">
+
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <label for="return_reason">Reason for
+                                                                    Return:</label>
+                                                                <textarea class="form-control"
+                                                                    id="return_single_reason"
+                                                                    name="return_single_reason" rows="3"
+                                                                    required></textarea>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-danger">Submit
+                                                                Return Request</button>
+                                                        </form>
+
+                                                    </div>
+                                                    {% endfor %}
+
+
+
+                                                    {% if details.status == 'Delivered' and not first_order_has_return_request %}
+                                                    <a href="javascript:void(0);" onclick="toggleReturnReason();"
+                                                        class="btn btn-danger mt-2">Return All</a>
+                                                    {% elif details.status == 'Return requested' %}
+                                                    <!-- <p>Return Requested</p> -->
+                                                    {% elif details.status == 'Shipped' or details.status == 'Out fordelivery'  or details.status == 'Order Confirmed'%}
+                                                    <a href="#" onclick="togglecancelReason();"
+                                                        class="btn btn-danger mt-3  ">Cancel All</a>
+                                                    {% endif %}
+
+                                                    <div id="return-reason-box" style="display: none;">
+                                                        <form method="POST" action="{% url 'returnorder' details.id %}">
+
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <label for="return_reason">Reason for
+                                                                    Return:</label>
+                                                                <textarea class="form-control" id="return_reason"
+                                                                    name="return_reason" rows="3" required></textarea>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-danger">Submit
+                                                                Return Request</button>
+                                                        </form>
+                                                    </div>
+
+
+                                                    <div id="cancel-reason-box" style="display: none;">
+                                                        <form method="POST" action="{% url 'cancelorder' details.id %}">
+
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <label for="return_reason">Reason for
+                                                                    Cacnel:</label>
+                                                                <textarea class="form-control" id="return_reason"
+                                                                    name="cancel_reason" rows="3" required></textarea>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-danger">Submit
+                                                                Cancel Request</button>
+                                                        </form>
+                                                    </div>
+
+
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </section>
+    <!-- Checkout Section End -->
+
+
+    <script>
+        
+
+    </script>
+
+    {% endblock %}
+
+</body>
+
+
+
+</html>

@@ -1,0 +1,103 @@
+{% extends 'Authenticatoins\lbase.html' %}
+
+{% load static %}
+
+{% block content%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f6f3f4f7;
+        }
+
+        .container {
+            height: 60vh;
+        }
+
+        .login-image {
+            height: 100vh;
+        }
+
+        .login-form {
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form form {
+            width: 80vw;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 login-form">
+                <form class="mt-5" method="POST" action="{% url 'user_login' %}">
+                    {% csrf_token %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <h2>Login</h2>
+                    <div class="form-group">
+                        <label for="username">Username or Email</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+                        <label class="d-flex justify-content-end" for="password">
+                            <a class="text-dark" href="forgetpas/"> Forgot your password</a>
+                        </label>
+                    </div>
+                    <div class="form-group d-flex align-items-center">
+                        <button class="btn-light rounded-sm border text-dark font-weight-normal" style="width: 100%;">Continue with Google</button>
+                    </div>
+                    <div class="form-group text-dark">
+                        <button style="width: 100%;" type="submit" class="btn btn-danger text-center">Sign In</button>
+                        <p>Dont have an Account <a href="/signup/" class="text-dark">Sign up</a></p>
+                    </div>
+                </form>
+            </div>
+            <div class=" mt-5 col-md-6 d-none d-md-block login-image">
+                <img src="https://img.freepik.com/free-photo/smiling-attractive-woman-stylish-colorful-outfit-jumping-with-shopping-bags-pink-yellow-background-polo-neck-striped-mini-skirt-shopaholic-sale-fashion-summer-trend_285396-2420.jpg" class="img-fluid" alt="Image">
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'js/mixitup.min.js' %}"></script>
+<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'js/jquery.slicknav.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/jquery.nicescroll.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+</html>
+
+{% endblock content%}
+
+
+
+

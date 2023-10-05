@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <title>Document</title>
+</head>
+<style>
+
+  
+</style>
+
+<body>
+  {% for item in order %}
+  <div class="container mt-6 mb-7 w-100 ">
+    <div class="row justify-content-center">
+      <div class="col-lg-12 col-xl-7 border-3 border-gray-200" style="border: 3px solid #ccc;">
+        <div class="">
+          <div class="">
+            <div class="d-flex justify-content-between">
+              <img src="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg"
+                alt="" width="60" height="44" class="d-inline-block align-text-top mb-4">
+              <h2>
+                Nt<span class="text-danger">k </span>Online Shop
+              </h2>
+            </div>
+            <p class="fs-sm" style="text-align: justify; padding: 10px;">
+              This is the receipt for a payment of <strong>&#8377; {{item.paid_amount}}</strong> that you made to Ntk
+              OnlineShop
+            </p>
+
+
+            <div class="border-top border-gray-200 pt-4 mt-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="text-muted mb-2">Payment id.</div>
+                  <strong>{{item.order_id}}</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                  <div class="text-muted mb-2">Payment Date</div>
+                  <strong>{{item.created}}</strong>
+                </div>
+              </div>
+            </div>
+            <div class="border-top border-gray-200 mt-4 py-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-2 font-weight-bold"><strong>
+                      Delivery Address
+                    </strong></div>
+                  <p>
+                    {{item.address.first_name}} {{item.address.last_name}},
+                    {{item.address.address}}, {{item.address.zip_code}},
+                    {{item.address.nearbylocation}},
+                    {{item.address.town}}, {{item.address.district}}.
+                    Ph No: {{item.address.phonenumber}}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <table class="table table-bordered   border-gray-200 mt-3">
+              <thead>
+                <tr class="font-weight-bold">
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">No</th>
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">Product</th>
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">Brand</th>
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">Size</th>
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">Price</th>
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">Qty</th>
+                  <th scope="col-md-2" class="fs-sm text-dark text-uppercase-bold-lg text-center px-0">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item,Total in zipdata %}
+                <tr>
+                  <td class="text-center px-0">{{forloop.counter}}</td>
+                  <td class="text-center px-0">{{item.variant.product.name}}</td>
+                  <td class="text-center px-0">{{ item.variant.product.brand.name }}</td>
+                  <td class="text-center px-0">{{ item.variant.size }}</td>
+                  <td class="text-center px-0">{{ item.variant.price }}</td>
+                  <td class="text-center px-0">{{ item.quandity }}</td>
+                  <td class="text-center px-0">{{ Total }}</td>
+                </tr>
+                <!-- End of second row -->
+                {% endfor %}
+                <!-- You can continue adding more rows as needed -->
+              </tbody>
+            </table>
+            <div class="mt-5 d-flex justify-content-end d">
+              <div class="col-md-6">
+                  <div class="row">
+                      <!-- Left column for labels -->
+                      <div class="col-6">
+                                  <p><strong>Subtotal</strong></p>
+                                  <p><strong>Discount</strong></p>
+                                  <p><strong>Tax</strong></p>
+                                  <p><strong>Total</strong></p>
+                      </div>
+                      <!-- Right column for dynamic data -->
+                      <div class="col-6 d-flex  justify-content-end">
+                              <div class="">
+                                  <p>{{ item.total }}</p>
+                                  <p>{{item.discount}} <!-- Add the tax value here --></p>
+                                  <p>{{item.tax}}<!-- Add the discount value here --></p>
+                                  <p>{{item.paid_amount}} <!-- Calculate and add the grand total here --></p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+
+          </div>
+          <button onclick="printable()"
+            class="btn btn-dark btn-lg card-footer-btn justify-content-center text-uppercase-bold-sm hover-lift-light">
+            <span class="svg-icon text-white me-2">
+              <i class="fa fa-print" aria-hidden="true"></i>
+            </span>
+            Print
+          </button>D
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <script>
+    function printable() {
+      window.print();
+    }
+  </script>
+</body>
+
+</html>

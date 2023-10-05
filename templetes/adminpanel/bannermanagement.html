@@ -1,0 +1,302 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+
+<style>
+    .banner {
+        display: flex;
+        flex-direction: column;
+        /* Set flex-direction to column */
+        justify-content: flex-start;
+        /* Align content to the top */
+        text-align: center;
+        /* Center text horizontally within the div */
+        height: 100vh;
+        /* You can adjust the height as needed */
+        position: relative;
+        /* Make sure the parent container is relatively positioned */
+    }
+
+    /* Adjust the positioning of the text elements */
+    .text-head {
+        position: absolute;
+        top: 0%;
+        left: 10%;
+        color: aliceblue;
+    }
+
+    .bannerheading {
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        color: aliceblue;
+        width: 30rem;
+    }
+
+    .text-content {
+        position: absolute;
+        top: 25%;
+        left: 10%;
+        color: aliceblue;
+
+
+    }
+
+    .dynamic-text {
+        position: absolute;
+        top: 35%;
+        left: 10%;
+        color: aliceblue;
+        width: 40rem;
+
+    }
+
+    .text-content:hover {
+        cursor: pointer;
+    }
+
+    .text-url {
+        position: absolute;
+        top: 25%;
+        left: 10%;
+        color: aliceblue;
+
+    }
+
+    .url-text {
+        position: absolute;
+        top: 35%;
+        left: 10%;
+        color: aliceblue;
+        width: 50rem;
+
+    }
+
+    .text-url_image {
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        color: aliceblue;
+        width: 50rem;
+
+    }
+
+    .select-image {
+        position: absolute;
+        top: 60%;
+        left: 10%;
+        color: aliceblue;
+        width: 50rem;
+
+    }
+
+    .image-link {
+        position: absolute;
+        top: 70%;
+        left: 10%;
+        color: aliceblue;
+        width: 50rem;
+    }
+
+    .save_button {
+        position: absolute;
+        top: 90%;
+        left: 10%;
+        color: aliceblue;
+        width: 50rem;
+
+    }
+</style>
+
+<body>
+    <div class="mt-2">
+
+        <div class="row" style="height: 120vh;">
+            <div class="col-md-2  d-none d-md-block" style="background-color: black;">
+                <div class="selectable-list text-light d-flex justify-content-center">
+                    <ul class="list-unstyled mt-5">
+                        <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+                        <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+                        <!-- Add more list items as needed -->
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-10 col-md-9 col-sm-8">
+                <h4 class="text-center text-dark">Banner Management</h4>
+                <!-- <button class="btn btn-dark" onclick="showthedivforaddingbaner()">Add Banner</button> -->
+                <button type="button" onclick="showthedivforaddingbaner()" class="btn btn-dark" data-toggle="modal"
+                    data-target=".bd-example-modal-xl">Add banner</button>
+                <div id="bannerblock">
+                    <div class="modal fade bd-example-modal-xl h-75" tabindex="-1" role="dialog"
+                        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content text-center">
+                                <div>
+                                    <h2 class="text-light bg-dark font-weight-bold">Add Your Banner</h4>
+                                </div>
+                                <div id="bannerblock">
+                                    <form action="{% url 'bannermanagement' %}" method="POST">
+                                        {%csrf_token%}
+                                        <div class="banner h-50 d-flex justify-content-center align-items-center">
+                                            <img class="img-fluid w-100 h-50" id="selectedImage"
+                                                src="https://media.istockphoto.com/id/1146517111/photo/taj-mahal-mausoleum-in-agra.jpg?s=612x612&w=0&k=20&c=vcIjhwUrNyjoKbGbAQ5sOcEzDUgOfCsm9ySmJ8gNeRk="
+                                                alt="">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h3 class="text-head">Men's Fashion</h3>
+                                                <input type="text" id="" class="text-dark bannerheading form-control"
+                                                    placeholder="Enter the banner heading ....." name="title">
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h3 class="text-url">Add the url</h3>
+                                                <input type="text" id="" class="text-dark url-text form-control"
+                                                    placeholder="Enter the Url to showing the data ....."
+                                                    name="url_for_data">
+                                            </div>
+                                            <div>
+                                                <h3 class="text-url_image">choose Either a flle or add a Url for poster
+                                                    image
+                                                </h3>
+                                                <input class="select-image" type="file" id="imageInput" accept="image/*"
+                                                    name="image">
+                                                <input type="text" id="imageLink"
+                                                    class="text-dark image-link form-control"
+                                                    placeholder="Enter the image link or choose a file URL ....."
+                                                    name="link_for_pic">
+                                            </div>
+                                            <button type="submit" class="save_button btn btn-dark text-light btn ">
+                                                Save Banner
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="bannerblock">
+
+                    {% for banner in page %}
+                    <div>
+                            <!-- <button type="button" onclick="showthedivforaddingbaner()" class="btn btn-primary" data-toggle="modal"
+                            data-target=".bd-example-modal-xl-{{forloop.counter}}">Edit the Banner</button> -->
+                        <button class="mt-5 btn btn-primary" data-toggle="modal"
+                        data-target=".bd-example-modal-xl-{{forloop.counter}}" onclick="showthedivforaddingbaner()">Edit the Banner</button>
+                        <a href="/admin_c/delete_banner/{{banner.id}}" class="mt-5 btn btn-danger">Delete the banner</a>
+                        <!-- <button class="mt-5 btn btn-danger">Delete the banner<a href=""></a></button> -->
+                    </div>
+
+                    <div class="banner  mt-5 h-25 d-flex justify-content-center align-items-center">
+                        {% if banner.image %}
+                        <img class="img-fluid " id="selectedImage" src="{{banner.image.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid w-100 h-100" id="selectedImage" src="{{banner.link}}" alt="">
+
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="text-head">Banner Title :- {{banner.title}}</h3>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="text-url">Added Url for data : - {{banner.linkfordata}}</h3>
+                        </div>
+                        <div>
+                            <h5 class="text-url_image">Url - Picture if have any :-{{banner.link}}</h5>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-between ">
+                        <div class="pagination-list">
+                          {% if page.has_previous %}
+                          <a href="?page=1" class="text-dark font-weight-bold">&laquo; First</a>
+                          <a href="?page={{ page.previous_page_number }}" class="text-dark font-weight-bold">Previous</a>
+                          {% endif %}
+                        </div>
+                          
+                          <span class="text-dark font-weight-bold">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                        
+                        <div class="pagination-list  ">
+                          {% if page.has_next %}
+                          <a href="?page={{ page.next_page_number }}" class="text-dark font-weight-bold">Next</a>
+                          <a href="?page={{ page.paginator.num_pages }}" class="text-dark font-weight-bold">Last &raquo;</a>
+                          {% endif %}
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <!--  Modal for Edit the banner -->
+       {% for banner in Banner_Details %}
+        <div id="bannerblock">
+            <div class="modal fade bd-example-modal-xl-{{forloop.counter}} h-75" tabindex="-1" role="dialog"
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content text-center">
+                        <div>
+                            <h2 class="text-light bg-dark font-weight-bold">Add Your Banner</h4>
+                        </div>
+                        <div id="bannerblock">
+                            <form action="{% url 'bannermanagement' %}" method="POST">
+                                {%csrf_token%}
+                                <div class="banner h-50 d-flex justify-content-center align-items-center">
+                                    {% if banner.image %}
+                                    <img class="img-fluid w-100 h-50" id="selectedImage"
+                                        src="{{banner.image.url}}"
+                                        alt="">
+                                    {% else %}
+                                    <img class="img-fluid w-100 h-50" id="selectedImage"
+                                        src="{{banner.link}}"
+                                        alt="">
+                                    {% endif %}
+
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h3 class="text-head">Enter the Edited Heading</h3>
+                                        <input type="text" id="" class="text-dark bannerheading form-control"
+                                            placeholder="{{banner.title}}" name="title">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h3 class="text-url">Enter the edited Url</h3>
+                                        <input type="text" id="" class="text-dark url-text form-control"
+                                            placeholder="{{banner.linkfordata}}" name="url_for_data">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-url_image">Change the image link
+                                        </h3>
+                                        <input class="select-image" type="file" id="imageInput" accept="image/*"
+                                            name="image">
+                                        <input type="text" id="imageLink" class="text-dark image-link form-control"
+                                            placeholder="{{banner.link}}"
+                                            name="link_for_pic">
+                                    </div>
+                                    <button type="submit" class="save_button btn btn-dark text-light btn ">
+                                        Edit Banner
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+        <script>
+
+           
+
+
+        </script>
+
+        <body>
+
+</html>
+{% endblock content%}

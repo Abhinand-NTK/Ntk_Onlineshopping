@@ -1,0 +1,331 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+
+<body>
+
+  <div class="mt-2">
+    <div class="row" style="height: 120vh;">
+      <div class="col-md-2  d-none d-md-block " style="background-color: black;">
+        <div class="selectable-list text-light d-flex justify-content-center">
+          <ul class="list-unstyled mt-5">
+            <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+            <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+            <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+            <li class="admin"><a class="item" href="/admin_c/productvarients/">Product Vareints</a></li>
+            <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+            <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+            <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+            <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+            <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+          </ul>
+        </div>
+
+
+      </div>
+      <div class="col-lg-10 col-md-9 col-sm-8" style="overflow-x: auto;">
+        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#addProductModal">
+          Add Product
+        </button>
+        <table class="table align-middle mb-0 bg-white">
+          <thead class="bg-light table table-bordered bg-dark text-light">
+            <tr>
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                  </div>
+                 {% endfor %}
+              {% endif %}
+            </tr>
+            <tr>
+              <th>Product Name</th>
+              <th>Descriptions</th>
+              <th>Brand</th>
+              <th>Subcategory</th>
+              <th>images</th>
+              <th>Edit</th>
+              <th>List/Unlist</th>
+            </tr>
+          </thead>
+          {% for i in page %}
+          <tbody class="table table-bordered table-border-dark table-border-3 "> 
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  {{i.name}}
+                </div>
+
+              </td>
+              <td>
+                {{i.description}}
+              </td>
+              <td>
+                {{i.brand}}
+              </td>
+              <td>{{i.subcategory}}</td>
+              <td>
+                <img src="{{ i.images.url }}" alt="{{i.image}}" width="100" height="100">
+
+              </td>
+              <td>
+                <button type="button" class="btn btn-dark" data-toggle="modal"
+                data-target="#editProductModal{{i.id}}">
+                Edit
+            </button>
+              <td>
+                <form action="{% url 'list_unlist_products'%}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="check" value="{% if i.active %}false{% else %}true{% endif %}">
+                  <input type="hidden" name="product_id" value="{{ i.id }}">
+                  <button class="btn toggle-button {% if i.active %}btn-success{% else %}btn-danger{% endif %}"
+                    type="submit">
+                    {% if i.active %}Unlist{% else %}List{% endif %}
+                  </button>
+                </form>
+              </td>
+              <td>
+                
+              </td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+
+
+        <div class="d-flex justify-content-between ">
+            <div class="pagination-list">
+              {% if page.has_previous %}
+              <a href="?page=1" class="text-dark font-weight-bold">&laquo; First</a>
+              <a href="?page={{ page.previous_page_number }}" class="text-dark font-weight-bold">Previous</a>
+              {% endif %}
+            </div>
+              
+              <span class="text-dark font-weight-bold">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+            
+            <div class="pagination-list">
+              {% if page.has_next %}
+              <a href="?page={{ page.next_page_number }}" class="text-dark font-weight-bold">Next</a>
+              <a href="?page={{ page.paginator.num_pages }}" class="text-dark font-weight-bold">Last &raquo;</a>
+              {% endif %}
+            </div>
+        </div>
+        
+
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- Button to Trigger Modal -->
+
+
+  <!-- Modal add products -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'addproducts' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="productName">Product Name</label>
+              <input type="text" class="form-control" name="productName" id="productName" required>
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <input type="text" class="form-control" id="description" name="description" required>
+            </div>
+            <div class="form-group">
+              <label for="brand">Brand</label>
+              <select class="form-control" id="brand" name="brand">
+                {% for y in brand %}
+                <option value="{{y.id}}">{{y.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="subcategory">Subcategory</label>
+              <select class="form-control" id="subcategory" name="subcategory">
+                {% for i in subcategory %}
+                <option value="{{i.id}}">{{i.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <h5 class="text-danger">Select a Option form the below to Continue</h5>
+            <!-- Checkboxes for gender selection -->
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="woman" value="True">
+              <label class="form-check-label" for="genderMen">
+                woman
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="kids" value="True">
+              <label class="form-check-label" for="genderMen">
+                kids
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="combos" value="True">
+              <label class="form-check-label" for="genderMen">
+                combos
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="men" value="True">
+              <label class="form-check-label" for="genderMen">
+                Men
+              </label>
+            </div>
+
+
+            <div class="form-group">
+              <label class="text-danger" for="images">Choose Images for Your Products</label>
+              <input type="file" class="form-control-file" id="images" name="image" multiple accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn-success">Add Products</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Edit modal---Modal for edit products -->
+
+
+  <!-- Modal -->
+  {% for i in page %}
+<div class="modal fade" id="editProductModal{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'editproducts' i.id %}" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="productName">Product Name</label>
+              <input type="text" class="form-control" name="productName" value="{{i.name}}" id="productName" required>
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <input type="text" class="form-control" id="description" value="{{i.description}}" name="description" required>
+            </div>
+            <div class="form-group">
+              <label for="brand">Brand</label>
+              <select class="form-control" id="brand"  name="brand">
+                {% for y in brand %}
+                <option value="{{ y.id }}" {% if y.id == i.brand.id %}selected{% endif %}>{{ y.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="subcategory">Subcategory</label>
+              <select class="form-control" id="subcategory" name="subcategory">
+                {% for x in subcategory %}
+                <option value="{{ x.id }}" {% if x.id == i.subcategory.id %}selected{% endif %}>{{ x.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <h5 class="text-danger">Select a Option form the below to Continue</h5>
+            <!-- Checkboxes for gender selection -->
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="woman" value="True">
+              <label class="form-check-label" for="genderMen">
+                  woman
+              </label>
+          </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="kids" value="True">
+              <label class="form-check-label" for="genderMen">
+                kids
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="combos" value="True">
+              <label class="form-check-label" for="genderMen">
+                combos
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="genderMen" name="men" value="True">
+              <label class="form-check-label" for="genderMen">
+                Men
+              </label>
+            </div>
+
+
+            <div class="form-group">
+              <label class="text-danger" for="images">Choose Images for Your Products</label>
+              <input type="file" class="form-control-file" id="images" name="image" multiple accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-success">Submit the Edit</button>
+          
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%endfor%}
+
+  <!-- Your existing HTML code here -->
+
+<!-- Add pagination links -->
+<div class="pagination">
+  <span class="step-links">
+    {% if page.has_previous %}
+    <a href="?page=1">&laquo; first</a>
+    <a href="?page={{ page.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current-page">{{ page.number }}</span>
+
+    {% if page.has_next %}
+    <a href="?page={{ page.next_page_number }}">next</a>
+    <a href="?page={{ page.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+
+<!-- Your existing HTML code here -->
+
+
+
+</body>
+
+
+</html>
+{% endblock content%}

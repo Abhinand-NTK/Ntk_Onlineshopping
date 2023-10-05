@@ -1,0 +1,222 @@
+{% load static %}
+</head>
+
+
+<style>
+    .dropdown-container {
+        position: relative;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #1e1f1e;
+        box-shadow: 0px 4px 8px rgba(247, 16, 16, 0.1);
+        padding: 10px;
+    }
+
+    .dropdown-container:hover .dropdown-menu {
+        display: block;
+    }
+    .logout-1
+    {
+     font-size: 1px;
+    }
+    
+</style>
+
+<!-- header section start -->
+
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- Offcanvas Menu Begin -->
+<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <ul class="offcanvas__widget">
+        <li><span class="icon_search search-switch"></span></li>
+        <li><a href="#"><span class="icon_heart_alt"></span>
+                <div class="tip">Add to cart</div>
+            </a></li>
+        <li><a href="#"><span class="icon_bag_alt"></span>
+                <div class="tip">Wish list</div>
+            </a></li>
+    </ul>
+    <div class="offcanvas__logo">
+        <a href="./index.html"><img src="{% static 'img/logo/1.png' %}" alt=""></a>
+    </div>
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__auth">
+        <!-- <button class="btn-danger"><a href="#">Login</a></button>
+        <button class="btn-danger "><a href="#">Register</a></button> -->
+    </div>
+</div>
+<!-- Offcanvas Menu End -->
+
+<!-- Header Section Begin -->
+<header class="header">
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-xl-3 col-lg-2">
+                <div class=" d-flex justify-content-between ">
+                    <a class="mt-2" href="./index.html"><img style="width: 10vh; height: 6vh; margin-block-start: 3vh;"
+                            src="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg"
+                            alt=""></a>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-7">
+                <nav class="header__menu">
+                    <ul>
+                        <li class=""><a href="/products/">Shop</a></li>
+
+                        <li class=""><a href="/products/womans/">Women’s</a>
+                            {% if heading == "Woman" %}
+                            <ul class="dropdown">
+                                {% for i in cat %}
+                                <li><a href="/products/filter/{{i}}/{{heading}}">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                            {%endif %}
+
+                        </li>
+                        <li><a href="/products/mens/">Men’s</a>
+                            {% if heading == "Men" %}
+                            <ul class="dropdown">
+                                {% for i in cat %}
+                                <li><a href="/products/filter/{{i}}/{{heading}}">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                            {%endif %}
+                        </li>
+                        <li><a href="/products/kids/">Kids</a>
+                            {% if heading == "Kids" %}
+                            <ul class="dropdown">
+                                {% for i in cat %}
+                                <li><a href="/products/filter/{{i}}/{{heading}}">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                            {%endif %}
+                        </li>
+                        <li><a href="/products/combos/">Combos</a>
+                            {% if heading == "Combos" %}
+                            <ul class="dropdown" style="text-decoration: none;">
+                                {% for i in cat %}
+                                <li><a style="text-decoration: none;"
+                                        href="/products/filter/{{i}}/{{heading}}">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                            {%endif %}
+                        </li>
+                        <li><a href="./blog.html">Blog</a></li>
+                        {% if user.is_authenticated and user.is_verified %}
+                        <li><a class="text-dark font-weight-5" href="">My Account</a>
+                            <ul class="dropdown">
+                                <li><a href="/myprofile/">My Profile</a></li>
+                                <li><a href="/products/">Product Details</a></li>
+                                <li><a href="/cart/cart_item/">Shop Cart</a></li>
+                                <li><a href="/cart/check_out/">Checkout</a></li>
+                                <li><a href="/myorder/">Order details</a></li>
+                                <li><a href="./blog-details.html">Blog Details</a></li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3">
+                <div class="header__right">
+                    <div class="header__right__auth">
+                        {% if user.is_authenticated and not user.is_blocked and user.is_verified%}
+                        <div class="header_right_auth">
+                            <a style="font-size: 1rem;" class="display-1 text-dark" href="#">{{user.first_name}}
+                                {{user.lastname}}</a>
+                        </div>
+
+                        {% else %}
+                        <div class="d-flex justifycontent-between">
+
+                            <div class="dropdown-container">
+                                <button type="button" style="width: 15vh; height: 5vh;"
+                                    class=" d-flex justifycontent-between btn btn-danger rounded-sm border text-primary font-weight-normal">
+                                    <a class="text-light text-align-center" href="/">
+                                        Sign in
+                                    </a>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="/myprofile/">My Profile</a>
+                                    <a href="./product-details.html">Product Details</a>
+                                    <a href="./shop-cart.html">Shop Cart</a>
+                                    <a href="./checkout.html">Checkout</a>
+                                    <a href="./blog-details.html">Blog Details</a>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="submit" style="width: 15vh; height: 5vh ; "
+                                    class="btn-danger rounded-sm border text-primary font-weight-normal">
+                                    <a class="text-light" href="/signup/">
+                                        Register
+                                    </a>
+                                </button>
+                            </div>
+                        </div>
+                        {%endif%}
+                    </div>
+                    <ul class="header__right__widget list-inline ">
+                        {% if user.is_authenticated and not user.is_blocked and user.is_verified%}
+                        <li>
+                            <a href="/mywishlist/0">
+                                <span class="position-relative">
+                                    <span class="fa fa-heart text-danger"></span>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle p-1 bg-secondary" style="height: 18px; width: 18px; font-size: 10px; line-height: 1;">
+                                        {{ request.session.wishlist_count|default:"0" }}
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/cart/cart_item/">
+                                <span class="position-relative">
+                                    <span class="fa fa-shopping-cart text-danger"></span>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle p-1 bg-secondary" style="height: 18px; width: 18px; font-size: 10px; line-height: 1;">
+                                        {{ request.session.cart_count|default:"0" }}
+                                    </span>
+                                    
+                                </span>
+                            </a>
+                        </li>
+                        {%else%}
+                        <li>
+                            <a href="/mywishlist/0">
+                                <span class="fa fa-heart text-danger"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/cart/cart_item/">
+                                <span class="fa fa-shopping-cart text-danger"></span>
+                            </a>
+                        </li> 
+                        {%endif%}
+                        {% if user.is_authenticated and not user.is_blocked and user.is_verified%}
+
+                        <li>
+                            <button type="submit" class="btn-danger logout-1 rounded-sm border text-primary font-weight-normal" >
+                                <a class="text-light font-weight-5 " href="/logout/"  style="font-size: small;">logout</a>
+                            </button>
+                        </li>
+                        {%endif%}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open">
+            <i class="fa fa-bars"></i>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<style>
+    .modal-header {
+        background-color: #B71C41;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<body>
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>My Orders</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="checkout__order">
+                        <h5><a class="text-dark" href="/myorder/">Your order</a></h5>
+                        <div class="dropdown">
+                            <h5><a class="text-dark" href="#">Account Settings</a></h5>
+                            <div class="dropdown-content">
+                                <a class="dropdown-item" href="/myprofile/">Personal Information</a>
+                                <a class="dropdown-item" href="/manageadress/">Manage Address</a>
+                            </div>
+                        </div>
+                        <h5><a class="text-dark" href="/mywallet">Mywallet</a></h5>
+                        <h5><a class="text-dark" href="/Mywishlist/0">mywishlist</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <h5 class="d-flex justifycontent-between font-weight-bold">My Order</h5>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="checkout__form__input">
+                            </div>
+                        </div>
+                    </div>
+                    {% if order_dict.items%}
+                    <div class="row mt-3">
+                        <div class="col-lg-12 col-md-8 col-sm-8 ">
+                            <div class="checkout__form__input">
+                                <div class="container borderd mt-3 ">
+                                    {% for order_id, items in order_dict.items %}
+                                    <div class="border p-3">
+                                        <div class="border font-weight-bold text-light bg-black mt-2 justify-content-between d-flex "
+                                            style=" height: 3rem;">
+                                            <div>
+                                                <a href="/order/order_details/{{ order_id }}"
+                                                    class="text-light align-text-center">Order-id: -
+                                                    {{ order_id }}</a>
+                                            </div>
+
+                                            <div>
+                                                <a class="font-weight-bold text-light mr-2"
+                                                    href="/printinvoice/{{ order_id }}">Print Invoice</a>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- <div class="border font-weight-bold text-light bg-black mt-2"><a href="/order/order_details/"></a>Order-id: - {{order_id }}</div> -->
+
+                                        {% for item in items %}
+                                        <div class="d-flex justify-content-between mt-3 border p-3">
+                                            <div class="row">
+                                                <div style="width: 3rem; height: 2rem;"><img
+                                                        src="{{ item.variant.product.images.url }}" alt=""></div>
+                                                <div>Size: - {{ item.variant.size }}</div>
+                                                <div>Color: - {{ item.variant.color }}</div>
+                                            </div>
+                                            <div>
+                                                <div>
+                                                    <!-- Additional details for each item if needed -->
+                                                </div>
+                                                ₹ {{ item.product_price }}
+                                            </div>
+                                            <div>
+                                                {{ item.quandity }}
+                                            </div>
+                                            <div>
+                                                {{ item.order_id.status }}
+                                            </div>
+
+                                        </div>
+
+                                        {% endfor %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%else%}
+                    <div class="row mt-3">
+                        <div class="col-lg-12 col-md-8 col-sm-8 " >
+                            <div class="">
+                                <div class="container h-25 borderd mt-3 bg-danger">
+                                    <div class="text-light font-weight-bold text-center  align-content-center" style="height: 100px;">
+                                        <p class="text-light font-weight-bold text-center fs-5 p-4">There are no items in the orders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {%endif%}
+                </div>
+            </div>
+    </section>
+    <!-- Checkout Section End -->
+
+    {% endblock%}
+
+</body>
+</html>

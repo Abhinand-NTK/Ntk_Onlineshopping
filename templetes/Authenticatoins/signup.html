@@ -1,0 +1,224 @@
+{% extends 'Authenticatoins\lbase.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .error-box {
+            position: relative;
+        }
+
+        .error-message {
+
+            color: red;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body style="background-color: #f6f3f4f7;">
+    <!-- <body style="background-color: #f5c5cf;" ></body> -->
+
+    <div class=" container vh-80 d-flex justify-content-center align-items-center ">
+        <div class="col-md-6 text-center d-none d-md-block vh-100">
+            <img style="height: 100vh; width: 90vh;"
+                src="https://img.freepik.com/free-photo/impressed-young-handsome-slavic-party-guy-wearing-party-hat-sunglasses-holding-balloons-paper-bags-looking-pointing-side-isolated-pink-wall_141793-85302.jpg"
+                class="img-fluid mt-4" alt="Image">
+        </div>
+        <div class="col-md-6 d-flex justify-content-center ">
+            <!-- <form method="POST" action="/signup/"  style="height: 85vh; width: 60vh;"  class="row d-flex justify-content-between mt-5"> -->
+            <form method="POST" action="{% url 'user_signup' %}" style="width: 80%" onsubmit="submission(event)"
+                class="row d-flex justify-content-center align-items-center vh-100 mt-5" id="signupform">
+                {% csrf_token %}
+                <div class="col-12  mb-4">
+                    <h2 class="">Sign up</h3>
+                </div>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                <div class="form-group col-12 d-flex justify-content-center mb-3">
+                    <button class="btn btn-light rounded-sm border text-dark font-weight-normal"
+                        style="width: 100%;">Continue with Google</button>
+                </div>
+                <div class="form-group col-6">
+                    <p class="error-message" id="firstname-error"></p>
+                    <label for="firstname">Enter your firstname</label>
+                    <input type="text" class="form-control" id="firstname" placeholder="Enter your firstname"
+                        name="firstname" required>
+
+                </div>
+                <div class="form-group col-6">
+                    <p class="error-message" id="lastname-error"></p>
+                    <label for="lastname">Enter your Lastname</label>
+                    <input type="text" class="form-control" id="lastname" placeholder="Enter your lastname"
+                        name="lastname" required>
+                </div>
+                <div class="form-group col-12">
+                    <p class="error-message" id="username-error"></p>
+                    <label for="username">Enter your Email or Phone Number</label>
+                    <input type="text" class="form-control" id="username"
+                        placeholder="Enter your e-mail or phone number" name="username" required>
+                </div>
+                <div class="form-group col-12">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password" name="password"
+                        required>
+                    <p class="error-message" id="password-error"></p>
+                </div>
+                <div class="form-group col-12">
+                    <label for="repeatpassword">Repeat Password</label>
+                    <input type="password" class="form-control" id="repeatpassword" placeholder="Repeat Password"
+                        name="repeatpassword" required>
+                    <p class="error-message" id="repeatpassword-error"></p>
+                </div>
+                <div class="form-group col-12 text-center">
+                    <label for="referral_code" class="text-center font-weight-bold">Referel Code(Optional)</label>
+                    <input type="text" class="form-control" id="referral_code" placeholder="Enter Refrel Code"
+                        name="referral_code">
+                </div>
+                <div class="form-group col-12 text-center">
+                    <button style="width: 100%;" type="submit" class="btn btn-danger">Sign Up</button>
+                    <p class="mt-2">I already have an account <a href="/" class="text-dark">Sign In</a></p>
+                </div>
+            </form>
+
+            <script>
+
+
+
+                let formdata = document.getElementById('signupform')
+
+
+
+                let userinput = formdata.querySelector('#username');
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                // for Email Validation 
+                let error_message_email = document.getElementById('username-error')
+
+
+
+
+
+                userinput.addEventListener('input', function () {
+                    let useremail;
+                    useremail = formdata.username.value;
+                    postData = { 'useremail': useremail }
+
+                    fetch('/Validation/', {
+                        method: 'POST', // or 'POST', 'PUT', 'DELETE', etc.
+                        headers: {
+                            'Content-Type': 'application/json', // Specify JSON content type
+                            'X-CSRFToken': csrfToken, // Include CSRF token in headers as well
+                            // Add more headers as needed
+                        },
+                        body: JSON.stringify(postData), // Convert the data to JSON format
+
+                    })
+                        .then(response => {
+                            // Handle the response here
+
+                            if (response.ok) {
+                                return response.json() // Assuming the response is JSON
+                            } else {
+                                throw new Error('Network response was not ok');
+                            }
+                        })
+                        .then(data => {
+                            if (data.message == 'Enter Your E-mail !!') {
+
+                                error_message_email.textContent = data.message
+                                error_message_email.style.color = 'green'
+                            }
+                            else {
+                                error_message_email.textContent = data.message
+                                error_message_email.style.color = 'red'
+
+
+
+                            }
+
+                        })
+                        .catch(error => {
+                            // Handle any errors here
+                        });
+                })
+
+                // for password validation
+                // Get references to the input fields and error message elements
+                const passwordInput = formdata.querySelector('#password');
+                const confirmPasswordInput = formdata.querySelector('#repeatpassword');
+                const passwordError = document.getElementById('password-error');
+                const confirmPasswordError = document.getElementById('repeatpassword-error');
+
+                // Define the password regex
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+                // Add an input event listener to both password and confirmPassword input fields
+                passwordInput.addEventListener('input', validatePassword);
+                confirmPasswordInput.addEventListener('input', validatePassword);
+
+                // Event listener function for password validation
+                function validatePassword() {
+                    const password = passwordInput.value;
+                    const confirmPassword = confirmPasswordInput.value;
+
+                    if (!passwordRegex.test(password)) {
+                        passwordError.textContent = "Password must be at least 6 characters long and include uppercase, lowercase, digit, and special character";
+                        passwordError.style.color = 'red';
+                    } else {
+                        passwordError.textContent = "Valid Password";
+                        passwordError.style.color = 'green';
+                    }
+
+                    if (password !== confirmPassword) {
+                        confirmPasswordError.textContent = "Passwords do not match";
+                        confirmPasswordError.style.color = 'red';
+                      
+
+                    } else {
+                        confirmPasswordError.textContent = "Passwords match";
+                        confirmPasswordError.style.color = 'green';
+                    
+                    }
+                }
+
+                function submission(event) {
+
+                    event.preventDefault()
+                    if(confirmPasswordError.style.color == 'green')
+                    {
+                        formdata.submit()
+                    }
+                    else{
+                        return false
+                    }
+
+                }
+               
+
+
+
+            </script>
+
+
+        </div>
+    </div>
+</body>
+
+</html>
+
+{% endblock content%}

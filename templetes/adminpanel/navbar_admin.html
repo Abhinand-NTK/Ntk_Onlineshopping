@@ -1,0 +1,67 @@
+{% load static %}
+</head>
+
+<!-- header section start -->
+
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- Offcanvas Menu Begin -->
+<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <ul class="offcanvas__widget">
+    
+    </ul>
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__auth">
+
+    </div>
+    <div class="col-md-2  " style="background-color: black;">
+
+        <div class="selectable-list text-light d-flex justify-content-center">
+            <ul class="list-unstyled mt-5">
+                <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+                    <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>                   
+                <!-- Add more list items as needed -->
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Offcanvas Menu End -->
+
+<!-- Header Section Begin -->
+<header class="header">
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-xl-3 col-lg-2">
+                <div class=" d-flex justify-content-between">
+                    <a href="./index.html"><img style="width: 10vh; height: 5vh; margin-block-start: 3vh;" src="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg" alt=""></a>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-7">
+                <nav class="header__menu">
+    
+                </nav>
+            </div>
+            <div class="col-xl-3 col-lg-3">
+                <div class="header__right">
+                    {% if 'admin' in request.session %}
+                    <button class="btn-dark logout-1 rounded-sm border text-primary font-weight-1" type="submit"><a class="text-light" href="/admin_c/logout/" style="font-size: medium;">Logout</a></button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open">
+            <i class="fa fa-bars"></i>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+<body>
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div>
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Shopping cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Shop Cart Section Begin -->
+    <section class="shop-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    {% if cart %}
+                    <div class="shop__cart__table text-center">
+                        <table class="table-bordered border-grey border-2 text-center">
+                            <thead class="">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in cart %}
+
+                                <tr>
+                                    <td>
+                                        {{forloop.counter}}
+                                    </td>
+                                    <td class="cart__product__item">
+                                        <img src="{{i.products.product.images.url}}" alt="" style="width: 2rem;">
+                                        <div class="cart__product__item__title">
+                                            <h6>{{i.products.product.name}}</h6>
+
+                                        </div>
+                                    </td>
+                                    <td class="cart__price">₹ {{i.products.price}}</td>
+                                    <td class="cart__quantity">
+                                        <div class="input-group quantity-control">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-danger bg-danger text-light"
+                                                        type="button"
+                                                        onclick="updateqty({{ i.id }}, 'decr',{{i.products.id}})">-</button>
+                                                </div>
+
+                                                <input type="text" class="col-sm-5" name="" value="{{ i.quantity }}"
+                                                    id="qty{{ i.id }}" readonly style="width: 60px;">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary bg-danger text-light"
+                                                        type="button"
+                                                        onclick="updateqty({{ i.id }}, 'incr',{{i.products.id}})">+</button>
+                                                </div>
+
+
+                                            </div>
+
+                                    </td>
+
+                                    <td>
+                                        <div class="form col-sm-12 font-weight-bold">
+                                            <input type="text" class="form-control" value="₹ {{i.total_price}}"
+                                                id="totalPriceInput{{ i.id }}" readonly>
+                                        </div>
+                                    </td>
+
+
+                                    <td class="cart__close">
+                                        <form action="/cart/delete_from_cart/{{i.id}}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="fa-border"><i
+                                                    class="fas fa-times"></i></button>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <a href="/products/" class="primary-btn">Countinue Shopping</a>
+            <div class="d-flex justify-content-end">
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+
+                </div>
+                <div class="col-lg-4 offset-lg-2">
+                    <div class="cart__total__procced">
+                        <p class="font-weight-bold fs-4 text-black">Cart Total</p>
+                        <ul>
+                            <li>Subtotal <span>₹ {{total_price}}</span></li>
+                        </ul>
+                        <a href="/cart/check_out/" class="primary-btn">Proceed to checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="shop__cart__table text-center">
+            <table class="table-bordered border-grey border-2 text-center">
+                <div class="shop__cart__table text-center">
+                    <table class="table-bordered border-grey border-2 text-center">
+                        <tr class="w-100 h-100 bg-danger">
+                            <td class="text-light font-weight-bold" colspan="3">Your cart is empty.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </table>
+        </div>
+        {%endif%}
+    </section>
+
+    {% endblock%}
+
+</body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="{% static 'js/cartpage.js' %}"></script>
+
+
+
+</html>

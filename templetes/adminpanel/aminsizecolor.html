@@ -1,0 +1,276 @@
+{% extends 'adminpanel\admin_basic.html' %}
+
+{% load static %}
+
+{% block content%}
+<html>
+
+<body>
+  <div class="mt-2">
+    <div class="row" style="height: 120vh;">
+      <div class="col-md-2 d-none d-md-block " style="background-color: black;">
+        <div class="selectable-list text-light d-flex justify-content-center">
+          <ul class="list-unstyled mt-5">
+            <li class="admin"><a class="item" href="/admin_c/dashboard/">Dashboard</a></li>
+            <li class="admin"><a class="item" href="/admin_c/users/">Users</a></li>
+            <li class="admin"><a class="item" href="/admin_c/products/">Product</a></li>
+            <li class="admin"><a class="item" href="/admin_c/category/">Category</a></li>
+            <li class="admin"><a class="item" href="/admin_c/coupen/">Coupons</a></li>
+            <li class="admin"><a class="item" href="/admin_c/ordermanagement/">Orders</a></li>
+            <li class="admin"><a class="item" href="/admin_c/bannermanagement/">Banners</a></li>
+            <li class="admin"><a class="item" href="/admin_c/dashboard/">Payments</a></li>
+            <!-- Add more list items as needed -->
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div>
+          <div class="row">
+            <div class="col-md-3 ">
+              <button id="showColorModalBtn" class="btn btn-dark" data-bs-toggle="modal"
+                data-bs-target="#colorModaledit">Add Color</button>
+              <table class="col-md-6 col-12 table table-striped table-hover border border-grey">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Colour Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for color in colo %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ color.name }}</td>
+                    <td>
+                      <button type="button" class="btn btn-dark edit-button" data-bs-toggle="modal"
+                        data-bs-target="#colorModal-{{ color.id }}">Edit</button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-dark edit-button" data-bs-toggle="modal"
+                         data-bs-target="#colorModal-{{ color.id }}">Delete</button> 
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-3 ml-5 ">
+              <button id="showSizeModalBtn" class="btn btn-dark" data-bs-toggle="modal"
+                data-bs-target="#sizeModal">Add Size</button>
+
+              <table class="col-md-6 col-12 table table-striped table-hover border border-grey">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Size Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for size in sizes %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ size.name }}</td>
+                    <td>
+                      <button type="button" class="btn btn-dark edit-button" data-bs-toggle="modal"
+                        data-bs-target="#sizeModal-{{ size.id }}">Edit</button>
+                    </td>
+                    <td>
+                      <button id="showSizeModalBtn" class="btn btn-dark" data-bs-toggle="modal"
+                        data-bs-target="#sizeModal">delete</button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-4 ml-4 ">
+              <button id="showBrandModalBtn" class="btn btn-dark" data-bs-toggle="modal"
+                data-bs-target="#brandModaledit">Add Brand</button>
+              <table class="col-md-6 col-12 table table-striped table-hover border border-grey">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Brand Name</th>
+                    <th>Brand Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for brand in brands %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ brand.name }}</td>
+                  
+                    <td>
+                      <img src="{{ brand.image.url }}" alt="{{brand.name}}" width="50" height="50">
+                  </td>
+                  
+                    <td>
+                      <button type="button" class="btn btn-dark edit-button" data-bs-toggle="modal"
+                        data-bs-target="#brandModal-{{ brand.id }}">Edit</button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-dark edit-button" data-bs-toggle="modal"
+                         data-bs-target="#brandModal-{{ brand.id }}">Delete</button> 
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Modal for Add Color -->
+  <div class="modal fade" id="colorModal" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="colorModalLabel">Add Color</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'addcolorsize' %}" method="post">
+            {% csrf_token %}
+            <input placeholder="Enter the color" type="text" name="color" id="">
+            <button type="submit" class="btn btn-success">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Add Size -->
+  <div class="modal fade" id="sizeModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sizeModalLabel">Add Size</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'addcolorsize' %}" method="post">
+            {% csrf_token %}
+            <input placeholder="Enter the size" type="text" name="size" id="">
+            <button type="submit" class="btn btn-success">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal for add the Brand -->
+
+<div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="brandModalLabel">Add Brand</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'addcolorsize' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="brandName" class="form-label">Brand Name</label>
+            <input type="text" class="form-control" id="brandName" name="brand" placeholder="Enter the brand">
+          </div>
+          <div class="mb-3">
+            <label for="brandImage" class="form-label">Choose an image</label>
+            <input type="file" class="form-control" id="brandImage" name="image">
+          </div>
+          <button type="submit" class="btn btn-success">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+ 
+
+  <!-- Modal for edit Color -->
+  {% for color in colo %}
+  <div class="modal fade" id="colorModal-{{ color.id }}" tabindex="-1" aria-labelledby="colorModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="colorModalLabel">Edit the Color</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin_c/editcolorsize/{{color.id}}" method="post">
+            {% csrf_token %}
+            <input placeholder="{{ color.name }}" type="text" name="color" id="">
+            <button type="submit" class="btn btn-success">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+
+
+   <!-- Modal for edit Size
+   -->
+   {% for size in sizes %}
+   <div class="modal fade" id="sizeModal-{{ size.id }}" tabindex="-1" aria-labelledby="sizeModalLabel"
+     aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="sizeModalLabel">Edit the Color</h5>
+           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+           <form action="/admin_c/editcolorsize/{{size.id}}" method="post">
+             {% csrf_token %}
+             <input placeholder="{{ size.name }}" type="text" name="size" id="">
+             <button type="submit" class="btn btn-success">Save</button>
+           </form>
+         </div>
+       </div>
+     </div>
+   </div>
+   {% endfor %}
+   
+   <!-- modal for edit the brand -->
+   {% for brand in brands %}
+   
+   <div class="modal fade" id="brandModal-{{ brand.id }}" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="brandModalLabel">Edit Brand</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin_c/editcolorsize/{{brand.id}}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="brandName" class="form-label">Brand Name</label>
+              <input type="text" class="form-control" id="brandName" name="brand" value="{{brand.name}}" placeholder="{{brand.name}}">
+            </div>
+            <div class="mb-3">
+              <label for="brandImage" class="form-label">Choose an image</label>
+              <input type="file" class="form-control" id="brandImage"  name="image">
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+   {% endfor %}
+</body>
+
+</html>
+{% endblock content%}

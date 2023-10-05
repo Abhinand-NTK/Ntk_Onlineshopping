@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+    .rating1 {
+        position: absolute;
+        top: 20rem;
+        /* Adjust the top position as needed */
+        left: 15rem;
+        /* Adjust the left position as needed */
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        /* Adjust font size as needed */
+        z-index: 2;
+      }
+      /* Rest of your styling for stars (same as in previous example) */
+      
+</style>
+
+<body>
+
+    <!-- Header Section End -->
+
+    <!-- Categories Section Begin -->
+    <section class="categories">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-lg-12 ml-2">
+                    <div class="row">
+                        {% for b in banner %}
+                        <div class="col-lg-6 col-md-6 col-sm-6 p-0">
+                            {% if b.image %}
+                            <div class="categories__item set-bg"
+                                data-setbg="{{b.image.url}}">
+                            {% else %}
+                            <div class="categories__item set-bg"
+                                data-setbg="{{b.link}}">
+                            {% endif %}
+                                <div class="categories__text">
+                                    <h4>{{b.title}}</h4>
+                                    <p class="text-black font-weight-bold">{{ count1 }} items</p>
+                                    <a href="{{b.linkfordata}}" class="text-light font-weight-bold">Shop now</a>
+                                </div>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Categories Section End -->
+
+    <!-- Product Section Begin -->
+    <section class="product spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="section-title">
+                        <h4>New products</h4>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-8">
+                    <ul class="filter__controls">
+                        <li class="active" data-filter="*">All</li>
+                        <li data-filter=".women">Women’s</li>
+                        <li data-filter=".men">Men’s</li>
+                        <li data-filter=".kid">Kid’s</li>
+                        <li data-filter=".accessories">Combos</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row property__gallery">
+                {% for i,y in data %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mix women">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" style="width: 100; height: 100;"
+                            data-setbg="{{i.images.url}}">
+                            <div class="label new">New</div>
+                            <ul class="product__hover">
+                            </ul>
+                            <div class="rating1">
+                                {% if y == none %}
+                                0
+                               {%else%}
+                               {{y}}
+                               {%endif%}
+                                 <li class="fa fa-star"></li>
+                            </div>
+                        </div>
+                        <div class="product__item__text">
+                            <h6><a href="/products/products_details/{{i.id}}">{{i.name}}</a></h6>
+                        </div>
+                    </div>
+                </div>
+
+                {% if forloop.counter|divisibleby:4 %}
+            </div>
+            <div class="row property__gallery">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+
+
+ 
+    <!-- Banner Section Begin -->
+    <section class="banner set-bg" data-setbg="{% static 'img/banner/banner-1.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-7 col-lg-8 m-auto">
+                    <div class="banner__slider owl-carousel" style="height: 60vh;">
+                        <div class="banner__item  justify-content-center align-items-center">
+                            <div class="banner__text">
+                                <span>The Choice Collection</span>
+                                <h1>Shope from the top brands</h2>
+                                <a href="#">Shop now</a>
+                            </div>
+                        </div>
+                        {% for i in brand %}
+                        <div class="banner__item d-flex justify-content-center">
+                            <div class="banner__text">
+
+                                <img class="" style="width: 90vh; height: 30vh;" src="{{i.image.url}}" alt="">
+                                <a href="#">Shop now</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Section End -->
+
+    
+    <!-- Trend Section End -->
+
+    <!-- Discount Section Begin -->
+    <section class="discount mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 p-0">
+                    <div class="discount__pic">
+                        <img src="{% static 'img/discount.jpg' %}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 p-0">
+                    <div class="discount__text">
+                        <div class="discount__text__title">
+                            <span>Discount</span>
+                            <h2>Summer 2019</h2>
+                            <h5><span>Sale</span> 50%</h5>
+                        </div>
+                        <div class="discount__countdown" id="countdown-time">
+                            <div class="countdown__item">
+                                <span>22</span>
+                                <p>Days</p>
+                            </div>
+                            <div class="countdown__item">
+                                <span>18</span>
+                                <p>Hour</p>
+                            </div>
+                            <div class="countdown__item">
+                                <span>46</span>
+                                <p>Min</p>
+                            </div>
+                            <div class="countdown__item">
+                                <span>05</span>
+                                <p>Sec</p>
+                            </div>
+                        </div>
+                        <a href="#">Shop now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Discount Section End -->
+
+    <!-- Services Section Begin -->
+    <section class="services spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="services__item">
+                        <i class="fa fa-car"></i>
+                        <h6>Free Shipping</h6>
+                        <p>For all oder over $99</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="services__item">
+                        <i class="fa fa-money"></i>
+                        <h6>Money Back Guarantee</h6>
+                        <p>If good have Problems</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="services__item">
+                        <i class="fa fa-support"></i>
+                        <h6>Online Support 24/7</h6>
+                        <p>Dedicated support</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="services__item">
+                        <i class="fa fa-headphones"></i>
+                        <h6>Payment Secure</h6>
+                        <p>100% secure payment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Services Section End -->
+
+
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+    <!-- Search End -->
+
+</body>
+
+</html>

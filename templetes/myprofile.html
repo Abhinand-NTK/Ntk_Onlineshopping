@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="zxx">
+<style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<body>
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Personal information</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="checkout__order">
+
+                        <h5><a class="text-dark" href="/myorder/">Your order</a></h5>
+                        <div class="dropdown">
+                            <h5><a class="text-dark" href="#">Account Settings</a></h5>
+                            <div class="dropdown-content">
+                                <a class="dropdown-item" href="/myprofile/">Personal Information</a>
+                                <a class="dropdown-item" href="/manageadress/">Manage Address</a>
+                            </div>
+                        </div>
+                        <h5><a class="text-dark" href="/mywallet">Mywallet</a></h5>
+                        <h5><a class="text-dark" href="/mywishlist/0">mywishlist</a></h5>
+
+
+                    </div>
+                </div>
+                <div class="col-lg-8 ">
+                    <div class="text-center">
+                        <h5><a class="text-success text-center" data-toggle="modal" data-target="#editmodal"
+                                href="#">Edit</a>&nbsp;&nbsp;&nbsp;Personal Information</h5>
+
+                    </div>
+                    {% if not user.images %}
+                    <div class="text-center">
+                        <img src="https://www.cornwallbusinessawards.co.uk/wp-content/uploads/2017/11/dummy450x450.jpg"
+                            alt="Add a Profile pic" class="rounded-circle" style="width: 100px; height: 100px;"
+                            id="profilepic">
+                    </div>
+                    {% else %}
+                    <div class="text-center">
+                        <img src="{{user.images.url}}" alt="Add a Profile pic" class="rounded-circle"
+                            style="width: 100px; height: 100px;" id="profilepic">
+                    </div>
+                    {% endif %}
+                    <div class="col-lg-12">
+                        <div class="text-center mt-3">
+                            <p>Referral Code: <span id="referral-code">{{ user.referral_code }}</span>
+                                <button id="k" type="button" onclick="abhi('{{ user.referral_code }}')"
+                                    style="border: 0; background-color: rgb(206, 204, 202); border-radius: 10px;"
+                                    class="p-1 copy-button">Copy</button>
+                            </p>
+                        </div>
+                    </div>
+                    {% if not user.images %}
+                    <form method="POST" action="{% url 'addprofilepicture' user.id %}" id="userprofiledetails"
+                        enctype="multipart/form-data">
+                        <div class="col-lg-12">
+                            <div class="text-center mt-3 d-flex justify-content-center align-content-center">
+                                {%csrf_token%}
+                                <div class="row">
+                                    <input type="file" name="profilepicture" id="addprofilepic1" style="display: none;"
+                                        accept="image/*">
+                                    <label for="addprofilepic1" class="profile-picture-label">Add a Picture</label>
+                                    <button type="submit">Save The pic</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
+                    <div class="col-lg-12">
+                        <div class="text-center mt-3">
+                            <p>User Name :- {{user.first_name}} {{user.lastname}}</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="text-center mt-3">
+                            <p>User Email :- {{user.email}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+
+
+
+    <!-- Modal for  edit the user-Details  -->
+
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Personal Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{% url 'myprofile_edit' %}" class="needs-validation" novalidate enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {% if not user.images %}
+                        <div class="text-center">
+                            <img src="https://www.cornwallbusinessawards.co.uk/wp-content/uploads/2017/11/dummy450x450.jpg"
+                                alt="Add a Profile pic" class="rounded-circle" style="width: 100px; height: 100px;"
+                                id="">
+                        </div>
+                        {% else %}
+                        <div class="text-center">
+                            <img src="{{user.images.url}}" alt="Add a Profile pic" class="rounded-circle"
+                                style="width: 100px; height: 100px;" id="editprofilepic" >
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <input type="file" name="profilepicture" id="editprofilepic1" style="display: none;"
+                                accept="image/*">
+                            <label for="editprofilepic1" class="profile-picture-label">Edit Picture</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstname">First Name</label>
+                            <input type="text" id="firstname" name="firstname" class="form-control"
+                                value="{{ user.first_name }}" required>
+                            <div class="invalid-feedback">
+                                Please provide a first name.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" id="lastname" name="lastname" class="form-control"
+                                value="{{ user.lastname }}" required>
+                            <div class="invalid-feedback">
+                                Please provide a last name.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" class="form-control">
+                            <small class="form-text text-muted">Leave empty to keep the current password.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <script>
+        function abhi(i) {
+            console.log(i)
+            navigator.clipboard.writeText(i);
+            const copyButton = document.getElementById('k');
+            copyButton.textContent = "Copied!";
+            setTimeout(() => {
+                copyButton.textContent = "Copy";
+            }, 5000);
+        };
+
+        const selectedImage = document.getElementById('profilepic');
+        console.log(selectedImage);
+
+        const selectedImage1 = document.getElementById('editprofilepic');
+        console.log(selectedImage);
+
+        const imageinput = document.getElementById('addprofilepic1');
+
+        console.log(imageinput);
+
+        if (imageinput) {
+
+            imageinput.addEventListener('change', function (event) {
+                const selectedFile = event.target.files[0];
+
+                if (selectedFile) {
+                    const imageURL = URL.createObjectURL(selectedFile);
+                    console.log(imageURL);
+                    selectedImage.src = imageURL;
+                    imageLink.value = ''; // Clear the image link input
+                } else {
+                    selectedImage.src = '';
+                }
+            });
+
+        }
+
+
+        const imageinput1 = document.getElementById('editprofilepic1');
+
+        if (imageinput1) {
+            imageinput1.addEventListener('change', function (event) {
+                const selectedFile = event.target.files[0];
+
+                if (selectedFile) {
+                    const imageURL = URL.createObjectURL(selectedFile);
+                    console.log(imageURL);
+                    selectedImage1.src = imageURL;
+                    imageLink.value = ''; // Clear the image link input
+                } else {
+                    selectedImage1.src = '';
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+
+
+</body>
+{% endblock%}
+
+
+
+</html>
