@@ -145,7 +145,7 @@ AUTH_USER_MODEL = "admin_auth.CustomUser"
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'Clothselling/static'),  # Additional directories for static files
+    os.path.join(BASE_DIR, 'static'),  # Additional directories for static files
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")  # Directory where collected static files will be stored
