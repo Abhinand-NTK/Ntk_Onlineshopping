@@ -314,7 +314,6 @@ def adminproductsvarients(request):
     try:
 
         if request.method == 'POST':
-            # try:
             product_id = request.POST.get('product')
             size_id = request.POST.get('size')
             color_id = request.POST.get('color')
@@ -337,11 +336,10 @@ def adminproductsvarients(request):
                 multiple_images = request.FILES.getlist('image', None)
                 if multiple_images:  # Use getlist to get multiple files
                     for image in multiple_images:
-                        photos = Multipleimges.objects.create(
+                        Multipleimges.objects.create(
                             product=product_variant,
                             images=image,
                         )
-                        # photos.save()
 
                 messages.success(request, "Product Varient added successfully")
                 return redirect('productvarients')
@@ -907,10 +905,10 @@ def Coupen(request):
             page = paginator.get_page(page_number)
             context = {'page': page}
 
-        return render(request, 'adminpanel\coupenmanagment.html', context)
+        return render(request, 'adminpanel/coupenmanagment.html', context)
     except Exception as e:
         print(e)
-        return render(request, 'adminpanel\coupenmanagment.html', context)
+        return render(request, 'adminpanel/coupenmanagment.html', context)
 
 
 
@@ -1006,10 +1004,10 @@ def Productvarientdetails(request, id):
 
         images = Multipleimges.objects.filter(product=Productdetails)
         context = {'images': images, 'Productdetails': Productdetails}
-        return render(request, 'adminpanel\productvarientdetailspage.html', context)
+        return render(request, 'adminpanel/productvarientdetailspage.html', context)
     except Exception as e:
         print(e)
-        return render(request, 'adminpanel\productvarientdetailspage.html', context)
+        return render(request, 'adminpanel/productvarientdetailspage.html', context)
 @staff_member_required(login_url='adminlogin')
 @cache_control(no_store=True, no_cache=True)
 def Admin_Sales_Report(request):

@@ -9,9 +9,13 @@
 </div>
 
 <!-- Offcanvas Menu Begin -->
+{% if 'admin' in request.session %}
 <div class="offcanvas-menu-overlay"></div>
 <div class="offcanvas-menu-wrapper">
     <div class="offcanvas__close">+</div>
+    {% if 'admin' in request.session %}
+    <div class=""><a class="btn btn-dark" href="/admin_c/logout/">Logout</a></div>
+    {% endif %}
     <ul class="offcanvas__widget">
     
     </ul>
@@ -36,6 +40,7 @@
         </div>
     </div>
 </div>
+{%endif%}
 <!-- Offcanvas Menu End -->
 
 <!-- Header Section Begin -->

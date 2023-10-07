@@ -32,17 +32,15 @@
 </style>
 
 <body>
-
     <!-- Header Section End -->
 
     <!-- Categories Section Begin -->
     <section class="categories">
         <div class="container-fluid">
             <div class="row">
-
                 <div class="col-lg-12 ml-2">
                     <div class="row">
-                        {% for b in banner %}
+                        {% for b,i in banner_data %}
                         <div class="col-lg-6 col-md-6 col-sm-6 p-0">
                             {% if b.image %}
                             <div class="categories__item set-bg"
@@ -53,7 +51,7 @@
                             {% endif %}
                                 <div class="categories__text">
                                     <h4>{{b.title}}</h4>
-                                    <p class="text-black font-weight-bold">{{ count1 }} items</p>
+                                    <p class="text-black font-weight-bold">{{ i }} items</p>
                                     <a href="{{b.linkfordata}}" class="text-light font-weight-bold">Shop now</a>
                                 </div>
                             </div>

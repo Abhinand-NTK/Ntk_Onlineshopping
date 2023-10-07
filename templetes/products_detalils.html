@@ -333,7 +333,7 @@
                             <div class="tab-pane" id="tabs-3" role="tabpanel">
                                 <div class="d-flex justify-content-lg-start">
                                     <div class="md-col-4  h-50 review-content">
-                                        {% if ratingall %}
+                                        <!-- {% if ratingall %}
                                         {% for variant_id, data in product_variant_images.items %}
                                         <div id="product-images-container ml-5" class="picbox mt-2"
                                             onmouseenter="ready('{{ variant_id }}', '{{ data.1 }}')">
@@ -345,10 +345,15 @@
                                             {% endwith %}
                                         </div>
                                         {% endfor %}
-                                        {% endif %}
+                                        {% endif %} -->
                                     </div>
                                     <div class="md-col-8">
                                         {% for rating in ratingall %}
+                                        {% if rating.user.images %}
+                                        <img data-variant-id="{{ variant_id }}" data-color="{{ data.1 }}"
+                                        class="product__big__img mt-5" src="{{ rating.user.images.url }}" alt=""
+                                        style="width: 5rem; height: 5rem;">
+                                       {%endif%}
                                         <div class="review-box ">
                                             <div class="user-info">
                                                 <h4>{{ rating.user.first_name }} {{ rating.user.lastname }}</h4>

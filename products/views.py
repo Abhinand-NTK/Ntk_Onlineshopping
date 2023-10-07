@@ -56,14 +56,17 @@ def home(request):
                 average_ratings_list.append(
                     int(average_rating) if average_rating is not None else None)
                 
-        print(average_ratings_list)
-        print(average_ratings_list)
-        print(average_ratings_list)
+      
+                
+        
+        count=[count1,count2,count3,count4]
+     
                 
         data=zip(products,average_ratings_list)
+        banner_data = zip(banner,count)
 
 
-        context = {'count1': count1, 'count2': count2, 'count3': count3, 'count4': count4, 'products': products,
+        context = {'banner_data':banner_data, 'products': products,
                    'brand': brand, 'banner': banner,'data':data }
 
         return render(request, "home.html", context)
@@ -279,7 +282,6 @@ def Mens(request, id=None):
                     average_ratings_list.append(
                         int(average_rating) if average_rating is not None else None)
 
-        print(average_ratings_list)
 
         products_for_filter = Product.objects.filter(
             Q(men=True) or Q(kids=True)).order_by('id')
@@ -305,7 +307,6 @@ def Mens(request, id=None):
             average_ratings_list.append(
                 int(average_rating) if average_rating is not None else None)
 
-        print(average_ratings_list)
 
         zipped_data = zip(page, min_prices_per_product, average_ratings_list)
 
