@@ -173,7 +173,7 @@
                                 <input type="radio" value="op" name="payment-method" id="paypal">
                                 <span class="checkmark"></span>
                             </label>
-                            {%if user.wallet > 0 %}
+                            {%if user.wallet > GrandTotal %}
                             <label class="form-check-label">
                                 Wallet Amount
                                 <input type="radio" value="wallet" name="payment-method" id="wallet_payment_check">

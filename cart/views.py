@@ -13,27 +13,34 @@ from django.db.models import Sum
 def Cart_page(request):
     
     try:
-        user = request.session['user']
-        user_id = CustomUser.objects.get(email=user)
-
-        request.session['wishlist_count'] = Wishlist.objects.filter(user__email=user).count()
-        request.session['cart_count'] = Cart.objects.filter(user__email=user).count()
+        
 
         if 'user' in request.session:
+            user = request.session['user']
+            user_id = CustomUser.objects.get(email=user)
+            request.session['wishlist_count'] = Wishlist.objects.filter(user__email=user).count()
+            request.session['cart_count'] = Cart.objects.filter(user__email=user).count()
             cart = Cart.objects.filter(user=user_id)
+            all_items_in_stock = not any(item.products.stock <= 0 for item in cart)
             total_price = 0  
 
             for cart_item in cart:
                 cart_item.total_price = cart_item.quantity * cart_item.products.price
                 total_price += cart_item.total_price
+            
 
-            context = {'cart': cart, 'total_price': total_price}
+            context = {'cart': cart, 'total_price': total_price,'all_items_in_stock':all_items_in_stock}
             return render(request, 'cart_page.html', context)
+        else:
+            messages.info(request,"Login first")
+            return redirect("user_login")
 
-        return render(request, 'cart_page.html')
+    
+
     except Exception as e:
         print(e)
         return render(request, 'cart_page.html')
+
 
 def Add_to_Cart(request, product_vareint_id):
 
@@ -47,9 +54,7 @@ def Add_to_Cart(request, product_vareint_id):
                 quantity = int(request.POST['quantity'])
                 product_variant = ProductVariant.objects.get(id=product_vareint_id)
 
-                cart_item_total_quantity = Cart.objects.filter(products=product_variant).aggregate(Sum('quantity'))['quantity__sum'] or 0
-
-                if product_variant.stock < quantity or (cart_item_total_quantity is not None and product_variant.stock < cart_item_total_quantity + quantity):
+                if product_variant.stock < quantity:
                     messages.error(request, "The item is out of stock")
                     return redirect('details', id=product_variant.product.id)
 
@@ -67,8 +72,11 @@ def Add_to_Cart(request, product_vareint_id):
                 request.session['cart_count'] = Cart.objects.filter(user__email=user).count()
 
                 return redirect('cart_item')
-            # request.session['wishlist_count'] = Wishlist.objects.filter(user__email=user).count()
-            # request.session['cart_count'] = Cart.objects.filter(user__email=user).count()
+         
+
+        else:
+            messages.info(request,"login for add the items into cart")
+            return redirect('user_login')
 
     except Exception as e:
         print(e)
@@ -77,11 +85,12 @@ def Add_to_Cart(request, product_vareint_id):
   
 def Cart_delete(request, delete_id):
     try:
-        if 'user' in request.session:
-            delete = Cart.objects.get(id=delete_id)
+        if request.method == 'POST':
+            if 'user' in request.session:
+                delete = Cart.objects.get(id=delete_id)
 
-            delete.delete()
-            return redirect('cart_item')
+                delete.delete()
+                return redirect('cart_item')
     except Exception as e:
         print(e)
         return redirect('cart_item')
@@ -179,12 +188,11 @@ def Checkout(request):
 
 
 
-
 def update_cart_item_quantity(request):
 
  
 
-    # try:
+    try:
 
 
         if request.method == 'POST':
@@ -229,8 +237,8 @@ def update_cart_item_quantity(request):
                             'cart_Stock': cart_Stock,
                             'cart_count':cart_count,}
             return JsonResponse(response_data)
-    # except Exception as e:
-    #     print(e)
-    #     return JsonResponse(response_data)
+    except Exception as e:
+        print(e)
+        return JsonResponse(response_data)
 
 

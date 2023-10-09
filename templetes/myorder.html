@@ -98,8 +98,14 @@
                                             </div>
 
                                             <div>
-                                                <a class="font-weight-bold text-light mr-2"
-                                                    href="/printinvoice/{{ order_id }}">Print Invoice</a>
+                                                <form action="/printinvoice/{{ order_id }}" class="text-light" method="POST">
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-light" style="border: none; color: #f5f5f5; background-color: #000; ">Print Invoice</button>
+                                                    <!-- <a class="font-weight-bold text-light mr-2"
+                                                     type="submit">Print Invoice</a> -->
+
+                                                </form>
+                                                
                                             </div>
 
                                         </div>

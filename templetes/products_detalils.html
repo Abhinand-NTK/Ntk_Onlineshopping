@@ -133,17 +133,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="breadcrumb__links">
-                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-                        <a href="#">Women’s </a>
-                        <span>Essential structured blazer</span>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
     <section class="product-details spad">
         <div class="container">
             <div class="row">
@@ -200,6 +193,7 @@
                             <form id="cartForm" action="/cart/addtocart/{{ product_variant.id }}" method="POST">
                                 {% csrf_token %}
 
+                                {% if not all_variants_out_of_stock %}
                                 <div class="quantity">
                                     <button type="button" class="dec qtybtn" onclick="decrementQuantity()">-</button>
                                     <input type="number" name="quantity" id="quantity" value="1" readonly>
@@ -208,6 +202,10 @@
                                 
                                 <button type="submit" class="cart-btn"><span class="icon_bag_alt"></span> Add to
                                     cart</button>
+                                {% else %}
+                                <p class="text-danger" style="height: 1rem; font-size: 2rem;"> This items is currently out of stock</p>
+                                {% endif %}
+
                             </form>
                             <ul>
                                 {% if product_variant.checkcolor %}
@@ -333,19 +331,6 @@
                             <div class="tab-pane" id="tabs-3" role="tabpanel">
                                 <div class="d-flex justify-content-lg-start">
                                     <div class="md-col-4  h-50 review-content">
-                                        <!-- {% if ratingall %}
-                                        {% for variant_id, data in product_variant_images.items %}
-                                        <div id="product-images-container ml-5" class="picbox mt-2"
-                                            onmouseenter="ready('{{ variant_id }}', '{{ data.1 }}')">
-                                            {% with image_url=data.0 %}
-                                            <img data-variant-id="{{ variant_id }}" data-color="{{ data.1 }}"
-                                                class="product__big__img mt-5" src="{{ image_url }}" alt=""
-                                                style="width: 5rem; height: 5rem;">
-                                            <p class="text-weight-bold text-center">{{data.1}}</p>
-                                            {% endwith %}
-                                        </div>
-                                        {% endfor %}
-                                        {% endif %} -->
                                     </div>
                                     <div class="md-col-8">
                                         {% for rating in ratingall %}
@@ -354,7 +339,6 @@
                                         class="product__big__img mt-5" src="{{ rating.user.images.url }}" alt=""
                                         style="width: 5rem; height: 5rem;">
                                        {%endif%}
-                                        <div class="review-box ">
                                             <div class="user-info">
                                                 <h4>{{ rating.user.first_name }} {{ rating.user.lastname }}</h4>
                                             </div>

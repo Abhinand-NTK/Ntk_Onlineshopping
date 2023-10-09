@@ -39,11 +39,16 @@
 <div class="offcanvas-menu-overlay"></div>
 <div class="offcanvas-menu-wrapper">
     <div class="offcanvas__close">+</div>
-    
+    <!--  -->
     <div class="offcanvas__logo">
-        <a href="./index.html"><img src="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg" alt="" style="width: 6rem; height: 4rem;"></a>
+        <a href="/products/"><img src="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg" alt="" style="width: 6rem; height: 4rem;"></a>
         {% if 'user' in request.session %}
-        <a href="/logout/" class="btn btn-danger">Logout</a>
+        <form action="/logout/" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-danger logout-1 rounded-sm border text-primary font-weight-normal" >
+                <a class="text-light font-weight-5 " style="font-size: small;">logout</a>
+            </button>
+        </form>
         {% endif %}
     </div>
     <div id="mobile-menu-wrap"></div>
@@ -60,7 +65,7 @@
         <div class="row">
             <div class="col-xl-3 col-lg-2">
                 <div class=" d-flex justify-content-between ">
-                    <a class="mt-2" href="./index.html"><img style="width: 10vh; height: 6vh; margin-block-start: 3vh;"
+                    <a class="mt-2" href="/products/"><img style="width: 10vh; height: 6vh; margin-block-start: 3vh;"
                             src="https://t3.ftcdn.net/jpg/05/29/41/96/360_F_529419639_eFk62uXuzFexGwZR5Xi6zYwiAQvaxSjM.jpg"
                             alt=""></a>
                 </div>
@@ -108,7 +113,7 @@
                             </ul>
                             {%endif %}
                         </li>
-                        <li><a href="./blog.html">Blog</a></li>
+                        <li><a href="">Blog</a></li>
                         {% if user.is_authenticated and user.is_verified %}
                         <li><a class="text-dark font-weight-5" href="">My Account</a>
                             <ul class="dropdown">
@@ -117,7 +122,6 @@
                                 <li><a href="/cart/cart_item/">Shop Cart</a></li>
                                 <li><a href="/cart/check_out/">Checkout</a></li>
                                 <li><a href="/myorder/">Order details</a></li>
-                                <li><a href="./blog-details.html">Blog Details</a></li>
                             </ul>
                         </li>
                         {%endif%}
@@ -145,10 +149,11 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a href="/myprofile/">My Profile</a>
-                                    <a href="./product-details.html">Product Details</a>
-                                    <a href="./shop-cart.html">Shop Cart</a>
-                                    <a href="./checkout.html">Checkout</a>
-                                    <a href="./blog-details.html">Blog Details</a>
+                                    <a href="/products/">Product Details</a>
+                                    <a href="/products/womans/">Womans</a>
+                                    <a href="/products/mens/">Mens</a>
+                                    <a href="/products/kids/">kids</a>
+                                    <a href="/products/combos/">Combos</a>
                                 </div>
                             </div>
                             <div>
@@ -165,7 +170,7 @@
                     <ul class="header__right__widget list-inline ">
                         {% if user.is_authenticated and not user.is_blocked and user.is_verified%}
                         <li>
-                            <a href="/mywishlist/0">
+                            <a href="/mywishlist/{{0}}">
                                 <span class="position-relative">
                                     <span class="fa fa-heart text-danger"></span>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle p-1 bg-secondary" style="height: 18px; width: 18px; font-size: 10px; line-height: 1;">
@@ -179,7 +184,7 @@
                                 <span class="position-relative">
                                     <span class="fa fa-shopping-cart text-danger"></span>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle p-1 bg-secondary" style="height: 18px; width: 18px; font-size: 10px; line-height: 1;">
-                                        {{ request.session.cart_count|default:"0" }}
+                                        {{ request.session.cart_count|default:"0"}}
                                     </span>
                                     
                                 </span>
@@ -187,22 +192,31 @@
                         </li>
                         {%else%}
                         <li>
-                            <a href="/mywishlist/0">
+                            {%if user.is_authenticated %}
+                            <a href="/mywishlist/{{0}}">
                                 <span class="fa fa-heart text-danger"></span>
                             </a>
+                            {%endif%}
                         </li>
                         <li>
+                            {%if user.is_authenticated %}
                             <a href="/cart/cart_item/">
                                 <span class="fa fa-shopping-cart text-danger"></span>
                             </a>
+                            {%endif%}
+
                         </li> 
                         {%endif%}
                         {% if user.is_authenticated and not user.is_blocked and user.is_verified%}
 
                         <li>
-                            <button type="submit" class="btn-danger logout-1 rounded-sm border text-primary font-weight-normal" >
-                                <a class="text-light font-weight-5 " href="/logout/"  style="font-size: small;">logout</a>
-                            </button>
+                            <form action="/logout/" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-danger logout-1 rounded-sm border text-primary font-weight-normal" >
+                                    <a class="text-light font-weight-5 " style="font-size: small;">logout</a>
+                                </button>
+                            </form>
+                           
                         </li>
                         {%endif%}
                     </ul>

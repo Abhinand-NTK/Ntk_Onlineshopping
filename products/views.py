@@ -568,9 +568,11 @@ def product_details(request, id=None):
         product = get_object_or_404(Product, id=id)
         product_variants = ProductVariant.objects.filter(product=product)
 
-        for i in product_variants:
-            print(i.id)
+        all_variants_out_of_stock = all(
+        variant.stock <= 0  for variant in product_variants)
 
+
+       
         serialized_product_variants = serializers.serialize(
             'json', product_variants)
         request.session['product_variants_json'] = serialized_product_variants
@@ -635,12 +637,15 @@ def product_details(request, id=None):
                    'ordercheck': ordercheck,
                    'order_list_id': order_list_id,
                    'ratingcount': ratingcount,
+                   'all_variants_out_of_stock':all_variants_out_of_stock,
                    }
 
         return render(request, 'products_detalils.html', context)
     except Exception as e:
         print(e)
         return render(request, 'products_detalils.html', context)
+
+
 
 
 def Filtering_in_Prouduct_details_page(request):

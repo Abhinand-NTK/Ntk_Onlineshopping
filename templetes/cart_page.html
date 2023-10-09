@@ -9,6 +9,7 @@
 
 
 
+
 <body>
     <!-- Breadcrumb Begin -->
     <div class="breadcrumb-option">
@@ -26,10 +27,6 @@
                         </div>
                         {% endfor %}
                         {% endif %}
-                    </div>
-                    <div class="breadcrumb__links">
-                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-                        <span>Shopping cart</span>
                     </div>
                 </div>
             </div>
@@ -49,6 +46,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Product</th>
+                                    <th>Details</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
                                     <th>Total</th>
@@ -62,9 +60,25 @@
                                     <td>
                                         {{forloop.counter}}
                                     </td>
+                                   
+                                    
+                                    <td>
+
+                                        <div class="image-container">
+                                            {%  if i.products.stock <= 0 %}
+                                            <div class="label new text-danger font-weight-bold">Out of stock</div>
+                                            {% else %}
+                                            <div class="label new text-success font-weight-bold">in Stock</div>
+                                            {% endif %}
+
+                                            <img src="{{i.products.product.images.url}}" alt="Your Image" style="width: 2rem;">
+                                        </div>
+
+                                    </td>
                                     <td class="cart__product__item">
-                                        <img src="{{i.products.product.images.url}}" alt="" style="width: 2rem;">
-                                        <div class="cart__product__item__title">
+                                        
+                                        <!-- <img src="{{i.products.product.images.url}}" alt="" style="width: 2rem;"> -->
+                                        <div class="cart__product__item__title ">
                                             <h6>{{i.products.product.name}}</h6>
 
                                         </div>
@@ -87,9 +101,7 @@
                                                         onclick="updateqty({{ i.id }}, 'incr',{{i.products.id}})">+</button>
                                                 </div>
 
-
                                             </div>
-
                                     </td>
 
                                     <td>
@@ -130,7 +142,11 @@
                         <ul>
                             <li>Subtotal <span>₹ {{total_price}}</span></li>
                         </ul>
+                        {% if all_items_in_stock  %}
                         <a href="/cart/check_out/" class="primary-btn">Proceed to checkout</a>
+                        {% else %}
+                        <p>Since all items are not in stock , Delete the item out of stock for proceed witih checkout</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -145,7 +161,6 @@
                         </tr>
                     </table>
                 </div>
-
             </table>
         </div>
         {%endif%}

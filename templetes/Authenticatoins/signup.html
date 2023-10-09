@@ -43,7 +43,7 @@
                 </div>
                 {% if messages %}
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" id="messages">
                     {{ message }}
                 </div>
                 {% endfor %}
@@ -53,22 +53,24 @@
                         style="width: 100%;">Continue with Google</button>
                 </div>
                 <div class="form-group col-6">
-                    <p class="error-message" id="firstname-error"></p>
+                    <p class="error-message" id="firstname-error" style="height: 1rem;"></p>
                     <label for="firstname">Enter your firstname</label>
                     <input type="text" class="form-control" id="firstname" placeholder="Enter your firstname"
                         name="firstname" required>
 
+
                 </div>
                 <div class="form-group col-6">
-                    <p class="error-message" id="lastname-error"></p>
+                    <p class="error-message" id="lastname-error" style="height: 1rem;"></p>
                     <label for="lastname">Enter your Lastname</label>
                     <input type="text" class="form-control" id="lastname" placeholder="Enter your lastname"
                         name="lastname" required>
+
                 </div>
                 <div class="form-group col-12">
                     <p class="error-message" id="username-error"></p>
                     <label for="username">Enter your Email or Phone Number</label>
-                    <input type="text" class="form-control" id="username"
+                    <input type="email" class="form-control" id="username"
                         placeholder="Enter your e-mail or phone number" name="username" required>
                 </div>
                 <div class="form-group col-12">
@@ -87,6 +89,9 @@
                     <label for="referral_code" class="text-center font-weight-bold">Referel Code(Optional)</label>
                     <input type="text" class="form-control" id="referral_code" placeholder="Enter Refrel Code"
                         name="referral_code">
+                </div>
+                <div class="form-group col-12 text-center">
+                    <p id="messgessss"  class="text-info fs-3 font-weight-bold"></p>
                 </div>
                 <div class="form-group col-12 text-center">
                     <button style="width: 100%;" type="submit" class="btn btn-danger">Sign Up</button>
@@ -157,6 +162,42 @@
                         });
                 })
 
+                const nameInput = document.querySelector('#firstname'); // Replace '#name' with the actual ID of your name input field
+                const lastnameinput = document.querySelector('#lastname'); // Replace '#name' with the actual ID of your name input field
+                const nameError = document.getElementById('firstname-error'); // Replace 'name-error' with the ID of the error message element
+                const lastnameError = document.getElementById('lastname-error'); // Replace 'name-error' with the ID of the error message element
+
+                // Define the name regex
+                const nameRegex = /^[A-Za-z]+$/;
+
+                // Add an input event listener to the name field
+                nameInput.addEventListener('input', validateName);
+                lastnameinput.addEventListener('input', validateName);
+
+                // Event listener function for name validation
+                function validateName() {
+                    const name = nameInput.value;
+                    const lastname = lastnameinput.value;
+
+                    if (!nameRegex.test(name)) {
+                        nameError.textContent = "Please enter a valid name (letters only)";
+                        nameError.style.color = 'red';
+                    } else {
+                        nameError.textContent = " ";
+                        nameError.style.color = 'green';
+
+                    }
+                    if (!nameRegex.test(lastname)) {
+                        lastnameError.textContent = "Please enter a valid name (letters only)";
+                        lastnameError.style.color = 'red';
+                    } else {
+                        lastnameError.textContent = " ";
+                        lastnameError.style.color = 'green';
+
+                    }
+                }
+
+
                 // for password validation
                 // Get references to the input fields and error message elements
                 const passwordInput = formdata.querySelector('#password');
@@ -180,35 +221,39 @@
                         passwordError.textContent = "Password must be at least 6 characters long and include uppercase, lowercase, digit, and special character";
                         passwordError.style.color = 'red';
                     } else {
-                        passwordError.textContent = "Valid Password";
+                        passwordError.textContent = "Password must meet the criteria.";
                         passwordError.style.color = 'green';
                     }
 
-                    if (password !== confirmPassword) {
-                        confirmPasswordError.textContent = "Passwords do not match";
+                    if (!passwordRegex.test(confirmPassword)) {
+                        confirmPasswordError.textContent = "Confirm Password must be at least 6 characters long and include uppercase, lowercase, digit, and special character";
                         confirmPasswordError.style.color = 'red';
-                      
-
-                    } else {
+                    } else if (password === confirmPassword) { // Compare passwords using ===
                         confirmPasswordError.textContent = "Passwords match";
                         confirmPasswordError.style.color = 'green';
-                    
+                    } else {
+                        confirmPasswordError.textContent = "Passwords do not match";
+                        confirmPasswordError.style.color = 'red';
                     }
                 }
 
                 function submission(event) {
 
                     event.preventDefault()
-                    if(confirmPasswordError.style.color == 'green')
-                    {
+                    if (confirmPasswordError.style.color == 'green' && nameError.style.color == 'green' && lastnameError.style.color == 'green') {
                         formdata.submit()
                     }
-                    else{
+                    else {
+                        const messages = document.getElementById('messgessss');
+
+                        messages.innerHTML = "Fill all the fields as per the instruction"
+                        messages.style
+
                         return false
                     }
 
                 }
-               
+
 
 
 
