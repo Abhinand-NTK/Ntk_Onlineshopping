@@ -291,14 +291,14 @@ def Manage_Address(request):
             
         if request.method=='POST':
                 
-                first_name=request.POST['firstname'].strp()
-                last_name=request.POST['lastname'].strp()
+                first_name=request.POST['firstname'].strip()
+                last_name=request.POST['lastname'].strip()
                 phonenumber=request.POST['phonenumber'].strip()
-                address=request.POST['address'].strp()
-                town=request.POST['town'].strp()
+                address=request.POST['address'].strip()
+                town=request.POST['town'].strip()
                 zip_code=request.POST['zipcode'].strip()
-                nearbylocation=request.POST['nearbylocation'].strp()
-                district=request.POST['district'].strp()
+                nearbylocation=request.POST['nearbylocation'].strip()
+                district=request.POST['district'].strip()
 
                
 
@@ -346,6 +346,7 @@ def Manage_Address(request):
     except Exception as e:
         print(e)
         return render(request,'manageadress.html',context) 
+ 
 
 def Manage_Edit_Address(request, adress_id):
     try:
