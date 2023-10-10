@@ -225,12 +225,14 @@
                         {% csrf_token %}
                         <div class="row">
                             <div class="form-group col-lg-6 col-6 col-md-6">
+                                <span id="validationMessageforfirstname"></span>
                                 <label for="firstname">Firstname</label>
-                                <input type="text" class="form-control" id="firstname" name="firstname">
+                                <input type="text" class="form-control" id="firstname" name="firstname" required>
                             </div>
                             <div class="form-group col-lg-6 col-6 col-md-6">
+                                <span id="validationMessageforlastname"></span>
                                 <label for="lastname ">Lastname</label>
-                                <input type="text" class="form-control" id="lastname" name="lastname">
+                                <input type="text" class="form-control" id="lastname" name="lastname" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -240,10 +242,12 @@
                         </div>
 
                         <div class="form-group">
+                            <span id="validationMessageforaddress"></span>
                             <label for="address">Address</label>
                             <textarea class="form-control" id="address" name="address" rows="4"></textarea required>
                  </div>
                  <div class="form-group">
+                    <span id="validationMessagefortown"></span>
                      <label for="pin">Town</label>
                      <input type="text" class="form-control" id="town" name="town" required>
                  </div>
@@ -253,10 +257,12 @@
                      <input type="text" class="form-control" id="zipcode" name="zipcode" required>
                  </div>
                  <div class="form-group">
+                    <span id="validationMessagefornearbylocation"></span>
                      <label for="district">Nearbylocation</label>
                      <input type="text" class="form-control" id="nearbylocation" name="nearbylocation" required>
                  </div>
                  <div class="form-group">
+                    <span id="validationMessagefordistrict"></span>
                      <label for="state">District</label>
                      <input type="text" class="form-control" id="district" name="district" required>
                  </div>
@@ -290,37 +296,37 @@
                  <div class="row">
                      <div class="form-group col-lg-6 col-6 col-md-6">
                          <label for="firstname">Firstname</label>
-                         <input type="text" class="form-control" id="firstname" value="{{i.first_name}}" name="firstname">
+                         <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="firstname" value="{{i.first_name}}" name="firstname" required>
                      </div>
                      <div class="form-group col-lg-6 col-6 col-md-6">
                          <label for="lastname ">Lastname</label>
-                         <input type="text" class="form-control" id="lastname" value="{{i.last_name}}" name="lastname">
+                         <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="lastname" value="{{i.last_name}}" name="lastname" required>
                      </div>
                  </div>
                  <div class="form-group">
                      <label for="address">Mobile_number</label>
-                     <input type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{i.phonenumber}}" required>
+                     <input pattern="\d{10}" type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{i.phonenumber}}" required>
                  </div>
 
                  <div class="form-group">
                      <label for="address">Address</label>
-                     <textarea class="form-control" id="address"  name="address" value="" rows="4">{{i.address}}</textarea required>
+                     <textarea pattern=".*[A-Za-z].*" class="form-control" id="address"  name="address" value="" rows="4">{{i.address}}</textarea required>
                  </div>
                  <div class="form-group">
                      <label for="pin">Town</label>
-                     <input type="text" class="form-control" id="town" value="{{i.town}}" name="town" required>
+                     <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="town" value="{{i.town}}" name="town" required>
                  </div>
                  <div class="form-group">
                      <label for="locality">Zip_code</label>
-                     <input type="text" class="form-control" id="zipcode" value="{{i.zip_code}}" name="zipcode" required>
+                     <input pattern="\d{6}" type="text" class="form-control" id="zipcode" value="{{i.zip_code}}" name="zipcode" required>
                  </div>
                  <div class="form-group">
                      <label for="district">Nearby Location</label>
-                     <input type="text" class="form-control" id="nearbylocation" value="{{i.nearbylocation}}" name="nearbylocation" required>
+                     <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="nearbylocation" value="{{i.nearbylocation}}" name="nearbylocation" required>
                  </div>
                  <div class="form-group">
                      <label for="state">District</label>
-                     <input type="text" class="form-control" id="district" value="{{i.district}}" name="district" req>
+                     <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="district" value="{{i.district}}" name="district" required>
                  </div>
              <button type="submit" class="btn btn-primary">Edit Address</button>
              </form>
@@ -492,10 +498,6 @@
 
 {% block scripts %}
 
-
-<script>
-   
-</script>
 
 
 

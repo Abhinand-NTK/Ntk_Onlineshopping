@@ -2,123 +2,209 @@
 {% load static %}
 
 {% block content %}
+
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 
-<style>
-    .modal-header {
-        background-color: #B71C41;
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/includes.css' %}" type="text/css">
 
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
+    <style>
+        /* Custom CSS for the left-side modal */
+        .left-side-modal .modal-dialog {
+            max-width: 40%;
+            height: 60%;
+            margin: 0;
+            top: 20%;
+            left: 0;
+            z-index: 15;
+            transform: translate(-100%);
+            transition: transform 0.4s ease-in-out;
+        }
 
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1;
-    }
+        .left-side-modal.show .modal-dialog {
+            transform: translate(0);
+        }
+    </style>
 
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
+    <title>Document</title>
+</head>
 
-    .dropdown-item {
-        padding: 10px;
-        text-decoration: none;
-        color: #333;
-        display: block;
-    }
 
-    .dropdown-item:hover {
-        background-color: #f5f5f5;
-    }
-</style>
+
+
+<html>
+
+
+
 
 <body>
-    <div class="breadcrumb-option">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="breadcrumb__links">
-                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-                        <span>Manage Adress</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb End -->
 
     <!-- Checkout Section Begin -->
     <section class="checkout spad">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3">
-                    <div class="checkout__order">
-                        <h5><a class="text-dark" href="/myorder/">Your order</a></h5>
-                        <div class="dropdown">
-                            <h5><a class="text-dark" href="#">Account Settings</a></h5>
-                            <div class="dropdown-content">
-                                <a class="dropdown-item" href="/myprofile/">Personal Information</a>
-                                <a class="dropdown-item" href="/manageadress/">Manage Address</a>
-                            </div>
-                        </div>
-                        <h5><a class="text-dark" href="/mywallet">Mywallet</a></h5>
-                        <h5><a class="text-dark" href="/mywishlist/0">mywishlist</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <h2 class="d-flex justifycontent-between">Manage Address</h5>
-                        <h5><a class="text-success" data-toggle="modal" data-target="#exampleModal" type="submit"
-                                href="">Add</a>&nbsp;&nbsp;&nbsp; New Addess</h5>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="checkout__form__input">
-                                </div>
-                            </div>
-                        </div>
-                        {% if address_user %}
-                        <div class="row mt-3">
-                            <div class="col-lg-12 col-md-8 col-sm-8">
-                                <div class="checkout__form__input">
-                                    {% for i in address_user %}
-                                    <div class="border p-3">
-                                        <a data-toggle="modal" class="text-success" data-target="#editModal-{{i.id}}"
-                                            href="#">Edit</a>
-                                        <a class="text-danger" href="/manageadress_delete/{{ i.id }}">Delete</a>
-                                        <hr>
-                                        <span>{{ i.first_name }} {{i.last_name}}</span><span>&nbsp;&nbsp;{{i.phonenumber }}</span>
-                                        <p>{{ i.address }} {{ i.zip_code }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {%else%}
-                        <div class="row mt-3">
-                            <div class="col-lg-12 col-md-8 col-sm-8">
-                                <div class="checkout__form__input bg-danger" style="height: 5rem;">
-                                    <p class="text-light text-center p-4">Address Field is Empty!! <strong>Add a new
-                                            address</strong></p>
-                                </div>
-                            </div>
-                        </div>
-                        {%endif%}
+
+            </div>
+            <div class="checkout__order__total">
+                <div class="coupon__input ">
+                    <button class="btn btn-success" data-target="#leftSideModal" data-toggle="modal">Find Your
+                        Coupens</button>
+                    <form action="{% url 'check_out' %}" method="POST">
+                        {% csrf_token %}
                         {% if messages %}
                         {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                             {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         {% endfor %}
                         {% endif %}
+                        <div class="input-group p-3 d-flex justify-content-end ">
+                            <div class="form-group">
+                                <label for="coupon-code">Enter Coupon Code:</label>
+                                <div class="row">
+                                    <input type="text" class="form-control" id="coupon-code"
+                                        placeholder="Enter Coupon Code" name="coupencode" />
+                                    <button class="btn btn-danger  " type="submit">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+            <form action="/order/placeorder/" method="POST" id="addressForm">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h4 class="d-flex justifycontent-between">Choose the Delivery Address</h5>
+                            <h5><a class="text-success" data-toggle="modal" data-target="#exampleModal" type="submit"
+                                    href="">Add</a>&nbsp;&nbsp;&nbsp; New Addess</h5>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="checkout__form__input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="checkout__form__input">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-lg-12 col-md-8 col-sm-8">
+                                    <div class="checkout__form__input">
+                                        {% for i in address_user %}
+
+                                        {% if forloop.counter <= 2 %} <div class="border p-3 ">
+
+                                            <div class="d-flex justify-content-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="address"
+                                                        id="inlineRadio1" value="{{i.id}}" required>
+                                                    <label class="form-check-label" for="inlineRadio1"></label>
+                                                </div>
+                                                <div>
+                                                    <a data-toggle="modal" class="text-success"
+                                                        data-target="#editModal-{{i.id}}" href="#">Edit</a>
+                                                    <a class="text-danger"
+                                                        href="/manageadress_delete/{{ i.id }}">Delete</a>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <span>
+                                                {{ i.first_name }}
+                                                {{i.last_name}}</span><span>&nbsp;&nbsp;{{i.phonenumber }}</span>
+                                            <p>{{ i.address }} {{ i.zip_code }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="checkout__order">
+                        <h5>Your Order</h5>
+
+                        <div class="checkout__order__product">
+                            <ul>
+                                <li>
+                                    <span class="top__text">Product</span>
+                                    <span class="top__text__right">Total</span>
+                                </li>
+                                {% for i in cart %}
+                                <li>
+                                    {{ forloop.counter }}. {{ i.products.product.name|truncatewords:3 }}
+                                    <span>₹ {{ i.products.price }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="checkout__order__total">
+                            <ul>
+                                <li>Subtotal <span> ₹ <span id="total_price_display">{{total_price}}</span></span></li>
+                                <li>Discount <span>₹ <span id="discount_price_display">{{discount_price}}</span></span>
+                                </li>
+                                <li>Tax <span>₹ <span id="tax_display">{{tax}}</span></span></li>
+                                <li>Grand Total <span>₹ <span id="GrandTotal_display">{{GrandTotal}}</span></span></li>
+                            </ul>
+                            <input type="hidden" name="total_price" id="total_price_input" value="{{total_price}}">
+                            <input type="hidden" name="discount_price" id="discount_price_input"
+                                value="{{discount_price}}">
+                            <input type="hidden" name="tax" id="tax_input" value="{{tax}}">
+                            <input type="hidden" name="GrandTotal" id="GrandTotal_input" value="{{GrandTotal}}">
+                        </div>
+                        <div class="checkout__order__widget form-check">
+                            <label class="form-check-label">
+                                Cash on Delivery
+                                <input type="radio" value="cod" name="payment-method" id="check-payment" required>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="form-check-label">
+                                Online Payment
+                                <input type="radio" value="op" name="payment-method" id="paypal">
+                                <span class="checkmark"></span>
+                            </label>
+                            {%if user.wallet > GrandTotal %}
+                            <label class="form-check-label">
+                                Wallet Amount
+                                <input type="radio" value="wallet" name="payment-method" id="wallet_payment_check">
+                                <span class="checkmark"></span>
+                            </label>
+                            {% endif %}
+                        </div>
+
+                        <button type="button" onclick="walletpayment()" class="site-btn" id="placeOrderButton">Place
+                            Order</button>
+                        <button type="button" class="site-btn  payonline" id="onlinePaymentButton">Online
+                            Payment</button>
+                        <div class="" id="wallet_payment">
+                            <ul class="list-unstyled ml-4">
+                                <li>
+                                    <span class="font-weight-bold underline">Total Wallet Amount <span
+                                            class="text-danger font-weight-bold ml-4">₹ {{user.wallet}}</span> </span>
+
+                                </li>
+                                <br>
+                            </ul>
+                            <button onclick="walletpayment()" type="button" class="site-btn  wallet"
+                                id="onlinePaymentButton">Wallet Payment</button>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+            </form>
+        </div>
+        </div>
+        </div>
     </section>
     <!-- Checkout Section End -->
 
@@ -135,120 +221,391 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/manageadress/" method="POST">
+                    <form action="/manageadress/" method="POST" id="addressform">
                         {% csrf_token %}
                         <div class="row">
                             <div class="form-group col-lg-6 col-6 col-md-6">
+                                <span id="validationMessageforfirstname"></span>
                                 <label for="firstname">Firstname</label>
-                                <input type="text" class="form-control" id="firstname" name="firstname">
+                                <input type="text" class="form-control" id="firstname" name="firstname" required>
                             </div>
                             <div class="form-group col-lg-6 col-6 col-md-6">
+                                <span id="validationMessageforlastname"></span>
                                 <label for="lastname ">Lastname</label>
-                                <input type="text" class="form-control" id="lastname" name="lastname">
+                                <input type="text" class="form-control" id="lastname" name="lastname" required>
                             </div>
                         </div>
                         <div class="form-group">
+                            <span id="validationMessage"></span>
                             <label for="address">Mobile_number</label>
                             <input type="text" class="form-control" id="phonenumber" name="phonenumber" required>
                         </div>
 
                         <div class="form-group">
+                            <span id="validationMessageforaddress"></span>
                             <label for="address">Address</label>
                             <textarea class="form-control" id="address" name="address" rows="4"></textarea required>
-                        </div>
-                        <div class="form-group">
-                            <label for="pin">Town</label>
-                            <input type="text" class="form-control" id="town" name="town" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="locality">Zip_code</label>
-                            <input type="text" class="form-control" id="zipcode" name="zipcode" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="district">Nearbylocation</label>
-                            <input type="text" class="form-control" id="nearbylocation" name="nearbylocation" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="state">District</label>
-                            <input type="text" class="form-control" id="district" name="district" required>
-                        </div>
-                    <button type="submit" class="btn btn-primary">Add Address</button>
+                 </div>
+                 <div class="form-group">
+                    <span id="validationMessagefortown"></span>
+                     <label for="pin">Town</label>
+                     <input type="text" class="form-control" id="town" name="town" required>
+                 </div>
+                 <div class="form-group">
+                    <span id="validationMessageforzipcode"></span>
+                     <label for="locality">Zip_code</label>
+                     <input type="text" class="form-control" id="zipcode" name="zipcode" required>
+                 </div>
+                 <div class="form-group">
+                    <span id="validationMessagefornearbylocation"></span>
+                     <label for="district">Nearbylocation</label>
+                     <input type="text" class="form-control" id="nearbylocation" name="nearbylocation" required>
+                 </div>
+                 <div class="form-group">
+                    <span id="validationMessagefordistrict"></span>
+                     <label for="state">District</label>
+                     <input type="text" class="form-control" id="district" name="district" required>
+                 </div>
+             <button type="submit" class="btn btn-primary">Add Address</button>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+             </form>
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+     </div>
+ </div>
+</div>
 
 
 <!-- Modal for edit the address -->
 
-
 {% for i in address_user %}
-
 <div class="modal fade" id="editModal-{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+ <div class="modal-content">
+     <div class="modal-header">
+         <h5 class="modal-title" id="editModalLabel">Edit Address</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+         </button>
+     </div>
+     <div class="modal-body">
+         <form action="/manageadress_edit/{{ i.id }}" method="POST">
+             {% csrf_token %}
+                 <div class="row">
+                     <div class="form-group col-lg-6 col-6 col-md-6">
+                         <label for="firstname">Firstname</label>
+                         <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="firstname" value="{{i.first_name}}" name="firstname" required>
+                     </div>
+                     <div class="form-group col-lg-6 col-6 col-md-6">
+                         <label for="lastname ">Lastname</label>
+                         <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="lastname" value="{{i.last_name}}" name="lastname" required>
+                     </div>
+                 </div>
+                 <div class="form-group">
+                     <label for="address">Mobile_number</label>
+                     <input pattern="\d{10}" type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{i.phonenumber}}" required>
+                 </div>
+
+                 <div class="form-group">
+                     <label for="address">Address</label>
+                     <textarea pattern=".*[A-Za-z].*" class="form-control" id="address"  name="address" value="" rows="4">{{i.address}}</textarea required>
+                 </div>
+                 <div class="form-group">
+                     <label for="pin">Town</label>
+                     <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="town" value="{{i.town}}" name="town" required>
+                 </div>
+                 <div class="form-group">
+                     <label for="locality">Zip_code</label>
+                     <input pattern="\d{6}" type="text" class="form-control" id="zipcode" value="{{i.zip_code}}" name="zipcode" required>
+                 </div>
+                 <div class="form-group">
+                     <label for="district">Nearby Location</label>
+                     <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="nearbylocation" value="{{i.nearbylocation}}" name="nearbylocation" required>
+                 </div>
+                 <div class="form-group">
+                     <label for="state">District</label>
+                     <input pattern=".*[A-Za-z].*" type="text" class="form-control" id="district" value="{{i.district}}" name="district" required>
+                 </div>
+             <button type="submit" class="btn btn-primary">Edit Address</button>
+             </form>
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+     </div>
+ </div>
+</div>
+{% endfor %}
+
+
+<!-- MoDAL FOR COUPEN -->
+
+
+
+
+<div class="modal fade left-side-modal" id="leftSideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Address</h5>
+                <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Coupens</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/manageadress_edit/{{ i.id }}" method="POST">
-                    {% csrf_token %}
+                {% for coupon in coupen %}
+                <div class="border p-3 bg-black">
+                    <div class="font-weight-bold text-light">
+                        {{ coupon.coupon_title }}
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
                         <div class="row">
-                            <div class="form-group col-lg-6 col-6 col-md-6">
-                                <label for="firstname">Firstname</label>
-                                <input type="text" class="form-control" id="firstname" value="{{i.first_name}}" name="firstname">
-                            </div>
-                            <div class="form-group col-lg-6 col-6 col-md-6">
-                                <label for="lastname ">Lastname</label>
-                                <input type="text" class="form-control" id="lastname" value="{{i.lastname}}" name="lastname">
-                            </div>
+                            <!-- Add other information here if needed -->
                         </div>
-                        <div class="form-group">
-                            <label for="address">Mobile_number</label>
-                            <input type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{i.phonenumber}}" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <textarea class="form-control" id="address"  name="address" value="{{i.address}}" rows="4">{{i.address}}</textarea required>
-                        </div>
-                        <div class="form-group">
-                            <label for="pin">Town</label>
-                            <input type="text" class="form-control" id="town" value="{{i.town}}" name="town" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="locality">Zip_code</label>
-                            <input type="text" class="form-control" id="zipcode" value="{{i.zip_code}}" name="zipcode" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="district">Nearbylocation</label>
-                            <input type="text" class="form-control" id="nearbylocation" value="{{i.nearbylocation}}" name="nearbylocation" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="state">District</label>
-                            <input type="text" class="form-control" id="district" value="{{i.district}}" name="district" req>
-                        </div>
-                    <button type="submit" class="btn btn-primary">Edit Address</button>
-                    </form>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            
+                <div class="border p-3">
+                    <div class="d-flex justify-content-between mt-3">
+                        <div class="row">
+                            <div class="font-weight-bold text-danger">{{ coupon.description }}</div>
+                            <div>Coupon Code: <span id="couponCode{{ coupon.id }}">{{ coupon.coupon_code }}</span> <button class="copy-button" onclick="copyCouponCode('{{ coupon.coupon_code }}')">Copy Coupon Code</button></div>
+                            <div>
+                                <span class="font-weight-bold">Copy The Coupon Code to Get the Offer</span>
+                            </div>
+                            <div>Minimum Order Amount: {{ coupon.minimum_order_amount }}</div>
+                            <div>Some Other Data: {{ coupon.something_else }}</div>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
+            </div>
+            
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
             </div>
         </div>
     </div>
-    {% endfor %}
-    {% endblock%}
+</div>
 
+<!-- Bootstrap JS and jQuery (make sure to include them) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+      <!--Modal: modalDiscount-->
+      <div class="modal fade right" id="modalDiscount" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-danger" role="document">
+          <!--Content-->
+          <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+              <p class="text-center text-black">Order Confirmation</p>
+              <button type="button"  class="close"  aria-label="Close">
+                <a href="/order/remove-show-modal/" class="text-black"><span aria-hidden="true" class="white-text">&times;</span></a> 
+              </button>
+            </div>
+  
+            <!--Body-->
+            <div class="modal-body">
+  
+              <div>
+                <h5>Thank Your For Shopping With us !</h5>
+                <h5 class="text-ceter"><span class="text-success text-center🥳🥳🥳🥳🥳🥳🥳🥳🥳🥳🥳">Congrats🥳🥳🥳🥳🥳🥳🥳🥳🥳🥳🥳</span> <hr> Your order is confirmed</h1>
+              </div>
+            </div>
+  
+            <!--Footer-->
+            <div class="modal-footer flex-center">
+              <a href="/order/remove-show-modal/" class="btn btn-danger">
+                Exit
+                <i class="far fa-gem ml-1 white-text"></i>
+              </a>
+              <a class="btn btn-outline-danger waves-effect" href="">Check Order Details</a>
+
+              <!-- <a type="submit" class="btn btn-outline-danger waves-effect" data-dismiss="modal" href="/myorder/">Check Orderdetails</a> -->
+            </div>
+          </div>
+          <!--/.Content-->
+        </div>
+      </div>
+      <!--Modal: modalDiscount-->
+
+     
+
+   
+      
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+      
+      <script>
+        // Set a JavaScript variable with the session value
+        var showModal = '{{ request.session.show_modal|default:"False"|lower }}';
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if the JavaScript variable 'showModal' is set to true
+            if (showModal === "true") {
+                // Display the modal on page load
+                $('#modalDiscount').modal('show');
+
+                // Remove the 'show_modal' session variable using a fetch request
+                fetch('/order/remove-show-modal/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,  // Replace with your CSRF token if needed
+                    },
+                }).then(function (response) {
+                    // Handle the response here if needed
+                    if (response.status === 200) {
+                        // Session variable removed
+                    } else {
+                        // Handle error if the removal fails
+                    }
+                });
+            }
+        });
+
+
+
+
+
+    </script>
+
+    <!-- Shop Section End -->
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+
+    {% endblock %}
 </body>
+
+<!-- success.html -->
+
+{% block scripts %}
+
+
+
+
+
+
+<script>
+
+    // Add an event listener to the radio buttons
+    var codRadioButton = document.getElementById('check-payment');
+    var onlineRadioButton = document.getElementById('paypal');
+    var walletpayementButton = document.getElementById('wallet_payment');
+    var walletRadioButton = document.getElementById('wallet_payment_check');
+    var placeOrderButton = document.getElementById('placeOrderButton');
+    var onlinePaymentButton = document.getElementById('onlinePaymentButton');
+    placeOrderButton.style.display = 'none';
+    onlinePaymentButton.style.display = 'none';
+    walletpayementButton.style.display = 'none';
+    console.log(walletRadioButton)
+
+
+
+
+    codRadioButton.addEventListener('change', function () {
+        if (codRadioButton.checked) {
+            // Show the "Place Order" button for COD
+            placeOrderButton.style.display = 'block';
+            // Hide the "Online Payment" button
+            onlinePaymentButton.style.display = 'none';
+            walletpayementButton.style.display = 'none';
+            console.log("Succeddd")
+        }
+        else if (onlineRadioButton.checked) {
+            placeOrderButton.style.display = 'none';
+            console.log("Succcedvdeddd")
+
+
+        }
+        else if (walletRadioButton.checked) {
+            console.log("Succe5454ddd")
+            placeOrderButton.style.display = 'none';
+            // Hide the "Online Payment" button
+            onlinePaymentButton.style.display = 'none';
+            walletpayementButton.style.display = 'block';
+
+        }
+    });
+
+    onlineRadioButton.addEventListener('change', function () {
+        if (onlineRadioButton.checked) {
+            // Show the "Online Payment" button for online payment
+            onlinePaymentButton.style.display = 'block';
+            // Hide the "Place Order" button
+            placeOrderButton.style.display = 'none';
+            walletpayementButton.style.display = 'none';
+
+        }
+    });
+    walletRadioButton.addEventListener('change', function () {
+        if (walletRadioButton.checked) {
+            // Show the "Online Payment" button for online payment
+            onlinePaymentButton.style.display = 'none';
+            // Hide the "Place Order" button
+            placeOrderButton.style.display = ' none';
+            walletpayementButton.style.display = 'block';
+
+        }
+    });
+
+
+</script>
+
+<script>
+    function copyCouponCode(couponCode) {
+        // Create a new textarea element to hold the coupon code
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = couponCode;
+
+        // Append the textarea to the document
+        document.body.appendChild(tempTextArea);
+
+        // Select the coupon code text
+        tempTextArea.select();
+        tempTextArea.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the selected text to the clipboard
+        document.execCommand('copy');
+
+        // Remove the temporary textarea
+        document.body.removeChild(tempTextArea);
+
+        // Optionally, you can provide a user feedback here (e.g., show a tooltip or message)
+        alert('Coupon code copied to clipboard: ' + couponCode);
+    }
+</script>
+
+
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+
+
+</script>
+
+{% endblock scripts %}
 
 
 
